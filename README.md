@@ -22,3 +22,8 @@ Notas de Aula e trabalhos do curso de [Controle Digital](http://www.ene.unb.br/h
  * https://github.com/spatialaudio/signals-and-systems-lecture
  * https://github.com/alchemyst/Dynamics-and-Control
 
+### Livros
+
+ * [Discrete-time and computer control systems by Cadzow, James A](https://archive.org/details/discretetimecomp0000cadz/)
+ * [Digital control of dynamic systems by Franklin, Gene F](https://archive.org/details/digitalcontrolof0000fran_m9e5/)
+ * [Digital control using microprocessors by Katz, Paul](https://archive.org/details/digitalcontrolus0000katz/)
