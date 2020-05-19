@@ -4,25 +4,54 @@
 % Layout
 % --------------------------------------------------------------------------------
 \input{relat_layout.tex}
+\usepackage{circuitikz}
+\usepackage[makestderr]{pythontex}
+%\restartpythontexsession{\thesection}
 
-\title{Laboratório X} % Define o título do Relatório
+\newcommand{\tituloRelatorio}{Lista 1}
+\title{\tituloRelatorio}
+\hypersetup{pdftitle={\tituloRelatorio}}% title
 \author{Rafael Lima}
 
-% Definições Auxiliares ( Macros próprias )
-% -----------------------------------------------------------------
+% Definições Auxiliares
+% --------------------------------------------------------------------------------
 %\input{relat_aux.tex} % Arquivo com minhas macros
+\renewcommand{\thesection}{Questão \arabic{section}}
+\renewcommand{\thesubsection}{(\alph{subsection})}
+\newcommand{\npy}[1]{\sympy{round(n#1,4)}}
+
 % ----------------------------------~>ø<~---------------------------------------
 \begin{document}
 % Capa e Índice ---------------------------------------------------------------
 \input{relat_capa.tex} % Capa para UnB
 % Conteúdo -------------------------------------------------------------------
 
-\section{Introdução}
-\section{Procedimentos}
-\section{Resultados}
-\section{Análise dos Resultados}
-\section{Conclusão}
-\section{Conclusão}
+\section{}
+
+\begin{sympycode}
+
+# Symbolic
+t = Symbol('t') # Tempo
+L = Symbol('L') # Espessura
+D = Symbol('D') # Diametro
+Qf = Symbol('Q_f') # Energia Gasta Pelo fogao
+Q = Symbol('Q') # Energia Recebida pela panela
+h = Symbol('h') # coeficiente conveccao
+Tamb = Symbol('T_a')
+Tf = Symbol('T_f')
+
+
+a = .85
+
+# Calculo area fundo da panela
+A = pi*D*D/4
+
+dQ = h*A*(-Tamb+Tf)
+\end{sympycode}
+
+\begin{equation}
+ \sympy{Derivative(Q,t)} = \sympy{dQ}
+\end{equation}
 
 % ---------------------------------------------------------------------------------------
 

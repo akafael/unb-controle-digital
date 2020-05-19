@@ -1,0 +1,49 @@
+% Pacotes e configurações padrão do estilo ``article''\
+% -------------------------------------
+\documentclass[a4paper,11pt]{article}
+% Layout
+% ------------------------------------------------------------------------------
+\input{relat_layout.tex}
+
+\title{Laboratório 1} % Define o título do Relatório
+\author{Rafael Lima}
+
+% Definições Auxiliares ( Macros próprias )
+% ------------------------------------------------------------------------------
+%\input{relat_aux.tex} % Arquivo com minhas macros
+% ----------------------------------~>ø<~---------------------------------------
+\begin{document}
+% Capa e Índice ----------------------------------------------------------------
+\input{relat_capa.tex} % Capa para UnB
+% Conteúdo ---------------------------------------------------------------------
+
+\section{Estabilidade pelo Critério de Juri}
+
+\begin{equation}
+G(z) = \frac{K(0,3679z + 0,2642)}{(z-1)(z-0,3679}
+\end{equation}
+
+\subsection{Definição Critério de Jury}
+
+O critério de Juri é 
+
+\subsection{Avaliação Estabilidade}
+
+Como sistema é ordem 3. É necessário verificar apenas as relações $J1$ e $J2$.
+
+\section{Estabilidade pelo Critério de Routh modificado}
+
+
+\section{Conclusão}
+
+% ------------------------------------------------------------------------------
+
+\bibliographystyle{abbrv}
+\bibliography{references}
+% Referências
+% Acrescentadas no arquivo references.bib
+% para usa-las no texto batsa usar \citep{}
+
+
+% ------------------------------------------------------------------------------
+\end{document}

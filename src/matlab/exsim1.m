@@ -1,14 +1,9 @@
-%% EXSIM1
+%% EXSIM1 - Digital Control Experiment
 % @author Rafael Lima
-
-% Clear Workspace
-clear
-clc
-close all
 
 %% Discrete Transfer Function definition
 Ts = 1
-Gnum = [0.3679 0.2642]            
+Gnum = [0.3679 0.2642]
 Gden = conv([1 -1],[1 -0.3679])
 G = tf(Gnum,Gden,Ts)
 
