@@ -5,6 +5,9 @@
 % ------------------------------------------------------------------------------
 \input{relat_layout.tex}
 
+\usepackage{circuitikz}
+\usepackage[makestderr]{pythontex}
+
 \title{Laboratório 1} % Define o título do Relatório
 \author{Rafael Lima}
 
@@ -17,15 +20,74 @@
 \input{relat_capa.tex} % Capa para UnB
 % Conteúdo ---------------------------------------------------------------------
 
-\section{Estabilidade pelo Critério de Juri}
+\section{}
 
-\begin{equation}
-G(z) = \frac{K(0,3679z + 0,2642)}{(z-1)(z-0,3679}
+Considerando um sistema de controle a tempo discreto com realimentação unitária e período de amostragem $T = 1s$ cuja função de transferência a malha aberta é dado pela equação \ref{eq:openloop-sys} :
+
+\begin{equation}\label{eq:openloop-sys}
+G(z) = \frac{K(0.3679z + 0.2642)}{(z-1)(z-0.3679}
 \end{equation}
+
+Denominando $\alpha_1 = 0.3679$, $\alpha_0 = 0.2642$, $\beta_1 = 1$ temos
+
+\begin{equation}\label{eq:openloop-sys-symbolic}
+    G(z) = \frac{K(\alpha_1 z + \alpha_0)}{(z-\beta_1)(z-\alpha_1}
+\end{equation}
+
+Temos que a função de transferência em malha fechada do sistema é
+
+$$G_{mf}(z) = \frac{G(z)}{1-G(z)}$$
+
+\begin{equation}\label{eq:closedloop-sys-symbolic}
+    G_{mf}(z) = \frac{K(\alpha_1 z + \alpha_0)}{(z-\beta_1)(z-\alpha_1}
+\end{equation}
+
+Substituindo $\alpha_1 = 0.3679$, $\alpha_0 = 0.2642$, $\beta_1 = 1$ temos
+
+\begin{equation}\label{eq:closedloop-sys}
+    G_{mf}(z) = \frac{K(\alpha_1 z + \alpha_0)}{(z-\beta_1)(z-\alpha_1}
+\end{equation}
+
+A partir de \ref{eq:closedloop-sys-symbolic} temos que o polinômio característico de malha fechada é
+
+\begin{equation}\label{eq:poly-sys-symbolic}
+    G_{mf}(z) = \frac{K(\alpha_1 z + \alpha_0)}{(z-\beta_1)(z-\alpha_1}
+\end{equation}
+
+\section{Estabilidade pelo Critério de Juri}
 
 \subsection{Definição Critério de Jury}
 
-O critério de Juri é 
+Para um sistema de ordem 2 as codições para estabilidade pelo critério de juri são
+
+\begin{equation}\label{eq:jury-c1}
+    \phi(1) > 0
+\end{equation}
+
+\begin{equation}\label{eq:jury-c2}
+    (-1)^n\phi(-1) > 0\ ,\ n=2
+\end{equation}
+
+\begin{equation}\label{eq:jury-c3}
+    |A_0| < |A_n|
+\end{equation}
+
+\subsection{Avaliando primeira condição}
+
+$$\phi(1) = ? $$
+
+\begin{equation}\label{eq:k-jury-c1}
+    K < ?
+\end{equation}
+
+\subsection{Avaliando primeira condição}
+
+$$(-1)^2\phi(-1) = \phi(-1)$$
+$$\phi(-1) = ?$$
+
+\begin{equation}\label{eq:k-jury-c1}
+    K < ?
+\end{equation}
 
 \subsection{Avaliação Estabilidade}
 

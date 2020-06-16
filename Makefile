@@ -13,7 +13,8 @@ OCTAVE = octave
 # LaTeX Report ----------------------------------------------------------------
 TEX = pdflatex
 TEXFLAGS = --enable-write18 --shell-escape
-PDFOUTPUT = exsim1.pdf
+TEXSRC = $(wildcard src/tex/ex*.tex)
+PDFOUTPUT = $(TEXSRC:.tex=.pdf)
 
 # Markdown Notes --------------------------------------------------------------
 SRC = $(wildcard src/jupyter/*.md)
@@ -51,18 +52,29 @@ clean-notes:
 report: ${PDFOUTPUT}
 
 # Implicity Rule to Compile texfile
-src/tex/%.pdf: src/tex/%.tex
+src/tex/%.pdf: src/tex/%.tex src/tex/%.pytexcode
 	cd $(dir $<) && $(TEX) $(TEXFLAGS) $(notdir $<)
+
+# Implicity Rule to Compile Python Code inside tex file
+src/tex/%.pytexcode: src/tex/%.tex
+	cd $(dir $<) &&\
+	$(TEX) $(TEXFLAGS) $(notdir $<) &&\
+   	pythontex $(notdir $<)
 
 # Remove LaTeX Temporary files
 .PHONY: clean-tex
 clean-tex:
-	rm -f $(NAME).aux $(NAME).bbl $(NAME).blg $(NAME).log $(NAME).idx $(NAME).out \ 
-	$(NAME).nav $(NAME).snm $(NAME).toc $(NAME).vrb
+	rm -fv src/tex/*.aux src/tex/*.bbl src/tex/*.blg src/tex/*.log src/tex/*.idx src/tex/*.out src/tex/*.nav src/tex/*.snm src/tex/*.toc src/tex/*.vrb
+
+# Remove Python Temporary files
+.PHONY: clean-py
+clean-py:
+	rm -fv src/tex/*.py*
+	rm -fvr src/tex/pythontex-files-*
 
 .PHONY = clean-all
 clean-pdf: clean-tex
-	rm -f $(NAME).pdf
+	rm -fv ${PDFOUTPUT}
 
 # Simulation Scripts ----------------------------------------------------------
 
