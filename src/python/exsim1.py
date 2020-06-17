@@ -1,6 +1,11 @@
+"""
+Laboratory Experiment 1 - Script
+@author Rafael Lima
+"""
+
 
 import sympy
-
+import control
 
 # Symbols
 z = sympy.symbols("z",complex=True)
@@ -25,12 +30,15 @@ npoly = poly.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 # Jury eq1
 eqJ1 = poly.subs(z,1)
-K1 = sympy.solve(eqJ1,K)
+K1 = sympy.solve(eqJ1,K)[0]
+nK1 = K1.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 # Jury eq2
 eqJ2 = poly.subs(z,-1)
-K2 = sympy.solve(eqJ2,K)
+K2 = sympy.solve(eqJ2,K)[0]
+nK2 = K2.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
-# Jury eq 3
+# Jury eq3
 apoly = sympy.Poly(poly.expand(), z).all_coeffs()
-K3 = sympy.solve(apoly[0]-apoly[-1],K)
+K3 = sympy.solve(apoly[0]-apoly[-1],K)[0]
+nK3 = K3.subs([(a1,na1),(a0,na0),(b1,nb1)])

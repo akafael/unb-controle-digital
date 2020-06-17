@@ -14,6 +14,7 @@
 % Definições Auxiliares ( Macros próprias )
 % ------------------------------------------------------------------------------
 %\input{relat_aux.tex} % Arquivo com minhas macros
+\newcommand{\npy}[1]{\sympy{round(#1,4)}}
 % ----------------------------------~>ø<~---------------------------------------
 \begin{document}
 % Capa e Índice ----------------------------------------------------------------
@@ -22,13 +23,14 @@
 
 \section{}
 
+% Código fonte colocado a parte para facilitar validação dentro do ipython
 \begin{sympycode}
+# Get Source Code
 sys.path.insert(1, '../../')
 from src.python.exsim1 import *
 \end{sympycode}
 
 Considerando um sistema de controle a tempo discreto com realimentação unitária e período de amostragem $T = 1s$ cuja função de transferência a malha aberta é dado pela equação \ref{eq:openloop-sys} :
-
 
 \begin{equation}\label{eq:openloop-sys}
     G(z) = \sympy{nGo}
@@ -48,7 +50,7 @@ $$G_{mf}(z) = \frac{G(z)}{1-G(z)}$$
     G_{mf}(z) = \sympy{sGc}
 \end{equation}
 
-Substituindo $\alpha_1 = 0.3679$, $\alpha_0 = 0.2642$, $\beta_1 = 1$ temos
+Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
 
 \begin{equation}\label{eq:closedloop-sys}
     G_{mf}(z) = \sympy{nGc}
@@ -87,10 +89,15 @@ $$\phi(1) = \sympy{eqJ1}$$
     K < \sympy{K1}
 \end{equation}
 
-\subsection{Avaliando primeira condição}
+Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+
+\begin{equation}\label{eq:k-jury-c1-numeric}
+    K < \npy{nK1.simplify()}
+\end{equation}
+
+\subsection{Avaliando segunda condição}
 
 $$\phi(z) = \sympy{poly}$$
-
 $$(-1)^2\phi(-1) = \phi(-1)$$
 $$\phi(-1) = \sympy{eqJ2}$$
 
@@ -98,13 +105,37 @@ $$\phi(-1) = \sympy{eqJ2}$$
     K < \sympy{K2}
 \end{equation}
 
-\subsection{Avaliação Estabilidade}
+Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+
+\begin{equation}\label{eq:k-jury-c2-numeric}
+    K < \npy{nK2}
+\end{equation}
+
+\subsection{Avaliação terceira condição}
 
 \begin{equation}\label{eq:k-jury-c3}
     K < \sympy{K3}
 \end{equation}
 
+Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+
+\begin{equation}\label{eq:k-jury-c3-numeric}
+    K < \npy{nK3}
+\end{equation}
+
+\subsection{Estabilidade}
+
+Comparando o resultado das inequações \ref{eq:k-jury-c1-numeric}, \ref{eq:k-jury-c2-numeric} e \ref{eq:k-jury-c3-numeric} temos que o intervalo de restrição para K é
+
+\begin{equation}\label{eq:k-jury-result}
+    K < \sympy{round(min(nK1,nK2,nK3),4)}
+\end{equation}
+
+
 \section{Estabilidade pelo Critério de Routh modificado}
+
+
+\section{Simulação}
 
 
 \section{Conclusão}

@@ -1,12 +1,21 @@
-# unb-controle-digital
+# Controle Digital
 
 Notas de Aula e trabalhos do curso de [Controle Digital](http://www.ene.unb.br/henrique/CDig/cdig.html) ministrado pelo professor [Henrique Cezar Ferreira](http://www.ene.unb.br/henrique/).
-
 
 ## Descrição das Pastas
 
  * [ref](ref): Material de Apoio
  * [src](src): Códigos e Notas de Aula
+
+## Conteúdo
+
+### Relatórios
+
+A descrição de todos os experimentos propostos encontrasse na pasta [ref](ref). Os relatórios referentes foram feitos adotando LaTeX para formatação e descrição do texto e python para as contas, gráficos e todo resto.
+
+```
+make clean-pdf; make report
+```
 
 ## Referencias
 
