@@ -21,7 +21,7 @@
 \input{relat_capa.tex} % Capa para UnB
 % Conteúdo ---------------------------------------------------------------------
 
-\section{}
+\section{Análise Sistema Discreto}
 
 % Código fonte colocado a parte para facilitar validação dentro do ipython
 \begin{sympycode}
@@ -140,6 +140,33 @@ Comparando o resultado das inequações \ref{eq:k-jury-c1-numeric}, \ref{eq:k-ju
 
 \section{Estabilidade pelo Critério de Routh modificado}
 
+O critério de Roth originalmente foi concebido para a avaliação de estabilidade de sistemas contínuos. No entanto podemos adaptar o sistema em tempo discreto a adotando a seguinte substituição de variável
+
+\begin{equation}\label{eq:bilinear-transf-w}
+    w = \frac{z+1}{z-1}
+\end{equation}
+
+Isolando $z$ temos:
+
+\begin{equation}\label{eq:bilinear-transf-z}
+    z = \frac{w+1}{w-1}
+\end{equation}
+
+O que representar uma propriedade interessante da transformada bilinear. Substituindo \ref{eq:bilinear-transf-z} em
+
+$$G(w) < \sympy{sGw}$$
+$$G(w) < \sympy{sGw.simplify().doit()}$$
+$$G(w) < \sympy{sGww}$$
+
+A partir do qual temos a seguinte equação característica no $plano-w$:
+
+$$\phi_w(w) = \sympy{polyw}$$
+
+Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+
+\begin{equation}
+    \phi_w(w) = \sympy{npolyw}
+\end{equation}
 
 \section{Simulação}
 
