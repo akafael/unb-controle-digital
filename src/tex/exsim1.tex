@@ -44,7 +44,7 @@ Denominando $\alpha_1 = 0.3679$, $\alpha_0 = 0.2642$, $\beta_1 = 1$ temos
 
 Temos que a função de transferência em malha fechada do sistema é
 
-$$G_{mf}(z) = \frac{G(z)}{1-G(z)}$$
+$$G_{mf}(z) = \frac{G(z)}{G(z) - 1}$$
 
 \begin{equation}\label{eq:closedloop-sys-symbolic}
     G_{mf}(z) = \sympy{sGc}
@@ -155,21 +155,46 @@ Isolando $z$ temos:
 O que representar uma propriedade interessante da transformada bilinear. Substituindo \ref{eq:bilinear-transf-z} em
 
 $$G(w) < \sympy{sGw}$$
-$$G(w) < \sympy{sGw.simplify().doit()}$$
-$$G(w) < \sympy{sGww}$$
+$$G(w) < \sympy{sGw.simplify()}$$
 
-A partir do qual temos a seguinte equação característica no $plano-w$:
-
-$$\phi_w(w) = \sympy{polyw}$$
 
 Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+$$G(w) < \sympy{nGww}$$
+
+A partir do qual temos a seguinte equação característica no $plano-w$:
 
 \begin{equation}
     \phi_w(w) = \sympy{npolyw}
 \end{equation}
 
+...
+
+% TODO Gerar tabela de Roth
+% Em particular para um polinomio de grau dois basta olhar somente ultimo termo
+
+Com isto temos a seguinte expressão
+
+$$0 < \sympy{sK4}$$
+
+\begin{equation}\label{eq:k-roth-numeric}
+    K < \npy{nK4}
+\end{equation}
+
+Comparando a expressão da inequação \ref{eq:k-roth-numeric} e \ref{eq:k-jury-result}, observa-se que foi obtido um valor similar para ambos métodos.
+
+
+\section{Oscilação Constante}
+
+Com base no resultado do método de Roth, se definimos $0 = \sympy{sK4}$ teremos $K = \npy{nK4}$. Com equação de trasnferência do sistema fica:
+
+\begin{equation}\label{eq:closedloop-sys-oscilation}
+    G_{2}(z) = \sympy{nGc.subs(K,nK4).simplify()}
+\end{equation}
+
+
 \section{Simulação}
 
+blah
 
 \section{Conclusão}
 

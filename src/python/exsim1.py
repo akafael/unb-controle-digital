@@ -21,7 +21,7 @@ sGo = K*(a1*z + a0)/((z-b1)*(z-a1))
 nGo = sGo.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 # Closed Loop Transfer Function
-sGc = (sGo/(1-sGo)).simplify()
+sGc = (sGo/(sGo - 1)).simplify()
 nGc = sGc.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 # Polynomy
@@ -58,14 +58,21 @@ nK3 = sK3.doit()
 # Modified Roth Criteria
 w = sympy.symbols("w",complex=True)
 bilinearTransf = (w+1)/(w-1)
-sGw = sGo.subs(z,bilinearTransf)
+sGw = sGc.subs(z,bilinearTransf)
 
 # Simplification
 num,den = sympy.fraction(sGw.expand().simplify())
 num = sympy.Poly(num,w)
 den = sympy.Poly(den,w)
 sGww = num/den
-nGww = Gww.subs([(a1,na1),(a0,na0),(b1,nb1)])
+nGww = sGww.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 polyw = den.expr
 npolyw = polyw.subs([(a1,na1),(a0,na0),(b1,nb1)])
+
+
+# TODO Generate Roth table
+
+sK4 = npolyw.subs(w,0)
+nK4 = sympy.solve(sK4,K)[0]
+
