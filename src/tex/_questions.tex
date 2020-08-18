@@ -1,0 +1,70 @@
+% Pacotes e configurações padrão do estilo ``article''\
+% -------------------------------------
+\documentclass[a4paper,11pt]{article}
+% Layout
+% --------------------------------------------------------------------------------
+\input{relat_layout.tex}
+\usepackage{circuitikz}
+\usepackage[makestderr]{pythontex}
+%\restartpythontexsession{\thesection}
+
+\newcommand{\tituloRelatorio}{Exercícios Presença}
+\title{\tituloRelatorio}
+\hypersetup{pdftitle={\tituloRelatorio}}% title
+\author{Rafael Lima}
+
+% Definições Auxiliares
+% --------------------------------------------------------------------------------
+%\input{relat_aux.tex} % Arquivo com minhas macros
+%\renewcommand{\thesection}{Questão \arabic{section}}
+%\renewcommand{\thesubsection}{(\alph{subsection})}
+\newcommand{\npy}[1]{\sympy{round(n#1,4)}}
+
+% ----------------------------------~>ø<~---------------------------------------
+\begin{document}
+% Capa e Índice ---------------------------------------------------------------
+%\input{relat_capa.tex} % Capa para UnB
+% Conteúdo -------------------------------------------------------------------
+
+\section{Aula 2020-08-18}
+\subsection{Exercício}
+Considere o exemplo dado em aula de controle do cabeçote de um HD:
+
+$$
+\left\{
+\begin{array}{l}
+    u(t) = K\left(\frac{b}{a}U_c(t) - y(t) + x(t)\right)\\
+    \frac{dx}{dt} = -ax + (a-b)y
+\end{array}
+\right.
+$$
+
+Se fosse utilizada a aproximação $\frac{dx}{dt} = \frac{x(t)- x(t-T)}{T}$. Obtenha a nova lei de controle e o pseudo-código correspondente que deve ser implementado em um processador digital de sinais.
+
+\subsection{Resposta}
+
+A partir da equação $\frac{dx}{dt} = -ax + (a-b)y$, aproximando a derivada, temos:
+
+$$\frac{x(t) - x(t-T)}{T} = (a-b) y(t) - a x(t)$$
+
+Isolando $y(t)$:
+$$x(t) - x(t-T) = T (a-b) y(t) - T a x(t)$$
+$$x(t)( 1 + T a) - x(t-T) = T (a-b) y(t)$$
+$$y(t) =\frac{x(t)( 1 + T a) - x(t-T)}{T (a-b)}$$
+
+Discretizando:
+\begin{equation}
+Y[k] = X[k]\frac{( 1 + T a)}{{T (a-b)}} - X[k-1]\frac{1}{{T (a-b)}}
+\end{equation}
+
+% ---------------------------------------------------------------------------------------
+
+%\bibliographystyle{abbrv}
+%\bibliography{references}
+% Referências
+% Acrescentadas no arquivo references.bib
+% para usa-las no texto batsa usar \citep{}
+
+
+% ---------------------------------------------------------------------------------------
+\end{document}
