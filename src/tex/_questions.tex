@@ -56,6 +56,32 @@ Discretizando:
 \begin{equation}
 Y[k] = X[k]\frac{( 1 + T a)}{{T (a-b)}} - X[k-1]\frac{1}{{T (a-b)}}
 \end{equation}
+\section{Aula 2020-08-20}
+ \subsection{Exercício}
+ Um sina $y(t)$ é gerado pela convolução de um sinal de banda limitada $x_1(t)$ com outro sinal de banda limitada $x_2(t)$, ou seja $y(t)=x_1(t)*x_2(t)$ sendo $X_1(j\omega) = 0$ para $|\omega| \geq 1000\pi$ e $X_2(j\omega) = 0$ para $|\omega| \geq 2000\pi$. A amostragem com trem de impulsos é realizada sobre $y(t)$ para obter
+ 
+$$y^*(t) = \sum^{+\infty}_{n=-\infty} y(nT)\delta(t-nT)$$
+
+Especifique o intervalo de valores para o período de amostragem $T$ que garante $y(t)$ é recuperável a partir de $y*(t)$:
+
+$$y(t)=x_1(t)*x_2(t)$$
+
+\subsection{Resposta}
+
+Aplicando a transformada, temos
+
+$$y^*(t)=x_1^*(t)x_2^*(t)$$
+
+Pelo teorema de Nyquist a frequência de amostragem têm que ser maior que o dobro da maior frequência do sistema. Como $\omega_1 \leq \omega_2$ então a frequência $w_n > 2w_2$. Logo o período de amostragem máximo será:
+
+$$
+\begin{array}{lcl}
+     T_0 &=& \frac{2\pi}{\omega_n} = \frac{2\pi}{2\omega_2}  \\
+     T_0 &=& \frac{2\pi}{4000\pi rad/s} = 0.5ms
+\end{array}
+$$
+
+E desta forma o período de amostragem deve estar dentro do intervalo $0< T < 0.5 ms$.
 
 % ---------------------------------------------------------------------------------------
 
