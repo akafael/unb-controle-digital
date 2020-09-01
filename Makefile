@@ -26,7 +26,15 @@ OUTPUT = $(addprefix notes/, $(notdir ${OBJ}))
 ###############################################################################
 
 # One rule to rule them all
-all: ${OBJ} ${OUTPUT}
+all: ${PDFOUTPUT}
+
+# Print help for Makefile commands
+.PHONY: help
+help:
+	@echo "Use: make -f Makefile [OPTION]"
+	@echo "\nOPTIONS"
+	@sed Makefile -n -e "N;s/^# \(.*\)\n.PHONY:\(.*\)/ \2:\1/p;D" | column -ts:
+	@echo ""
 
 # Notes -----------------------------------------------------------------------
 
@@ -56,7 +64,7 @@ src/tex/%.pdf: src/tex/%.tex src/tex/%.pytexcode
 	cd $(dir $<) && $(TEX) $(TEXFLAGS) $(notdir $<)
 
 # Implicity Rule to Compile Python Code inside tex file
-src/tex/%.pytexcode: src/tex/%.tex
+src/tex/%.pytexcode: src/tex/%.tex src/tex/relat_capa.tex src/tex/relat_layout.tex src/tex/references.bib
 	cd $(dir $<) &&\
 	$(TEX) $(TEXFLAGS) $(notdir $<) &&\
    	pythontex $(notdir $<)
@@ -72,7 +80,8 @@ clean-py:
 	rm -fv src/tex/*.py*
 	rm -fvr src/tex/pythontex-files-*
 
-.PHONY = clean-all
+# Remove Generated PDF Files
+.PHONY = clean-pdf
 clean-pdf: clean-tex
 	rm -fv ${PDFOUTPUT}
 
