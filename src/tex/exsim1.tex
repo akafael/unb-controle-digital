@@ -44,29 +44,33 @@ Denominando $\alpha_1 = 0.3679$, $\alpha_0 = 0.2642$, $\beta_1 = 1$ temos
 
 Temos que a função de transferência em malha fechada do sistema é
 
-$$G_{mf}(z) = \frac{G(z)}{G(z) - 1}$$
+$$G_{mf}(z) = \frac{G(z)}{G(z) + 1}$$
 
 \begin{equation}\label{eq:closedloop-sys-symbolic}
     G_{mf}(z) = \sympy{sGc}
 \end{equation}
 
-Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+A partir de \ref{eq:closedloop-sys-symbolic} temos que o polinômio característico de malha fechada é
+
+\begin{equation}\label{eq:poly-sys-symbolic}
+    \phi(z) = \sympy{poly}
+\end{equation}
+
+Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos, respectivamente para o a função de transferência de malha fechada e o polinônio caractarístico as equações \ref{eq:closedloop-sys} e \ref{eq:poly-sys}.
 
 \begin{equation}\label{eq:closedloop-sys}
     G_{mf}(z) = \sympy{nGc}
 \end{equation}
 
-A partir de \ref{eq:closedloop-sys-symbolic} temos que o polinômio característico de malha fechada é
-
-\begin{equation}\label{eq:poly-sys-symbolic}
-    G_{mf}(z) = \sympy{poly}
+\begin{equation}\label{eq:poly-sys}
+    \phi(z) = \sympy{npoly}
 \end{equation}
 
 \section{Estabilidade pelo Critério de Juri}
 
 \subsection{Definição Critério de Jury}
 
-Para um sistema de ordem 2 as codições para estabilidade pelo critério de juri são
+Para um sistema de ordem 2 as condições para estabilidade pelo critério de juri, é necessário avaliar 2+1=3 condições para verificar a estabilidade, sendo estas as seguintes:
 
 \begin{equation}\label{eq:jury-c1}
     \phi(1) > 0
@@ -82,29 +86,46 @@ Para um sistema de ordem 2 as codições para estabilidade pelo critério de jur
 
 \subsection{Avaliando primeira condição}
 
+Calculando $\phi(1)$:
+
 $$\phi(z) = \sympy{poly}$$
 $$\phi(1) = \sympy{eqJ1}$$
+$$\phi(1) = \sympy{neqJ1}$$
+
+Se $\phi(1) > 0$ então
+
+$$\sympy{neqJ1} > 0$$
+
+Isolando $K$:
 
 \begin{equation}\label{eq:k-jury-c1}
-    K < \sympy{K1}
+    K > \sympy{K1}
 \end{equation}
 
 Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
 
-$$K < \sympy{sK1}$$
+$$K > \sympy{sK1}$$
+
+Logo a primeira condição é
 
 \begin{equation}\label{eq:k-jury-c1-numeric}
-    K < \npy{nK1.simplify()}
+    K > \npy{nK1.simplify()}
 \end{equation}
 
 \subsection{Avaliando segunda condição}
 
-$$\phi(z) = \sympy{poly}$$
-$$(-1)^2\phi(-1) = \phi(-1)$$
-$$\phi(-1) = \sympy{eqJ2}$$
+Dado a equação característica $\phi(z) = \sympy{poly}$ temos
+
+$$(-1)^2\phi(-1) = \phi(-1) = \sympy{eqJ2}$$
+
+Logo
+
+$$\sympy{eqJ2.factor(K)} > 0$$
+
+Isolando $K$
 
 \begin{equation}\label{eq:k-jury-c2}
-    K < \sympy{K2}
+    K > \sympy{K2}
 \end{equation}
 
 Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
@@ -117,13 +138,22 @@ $$K < \sympy{sK2}$$
 
 \subsection{Avaliação terceira condição}
 
-\begin{equation}\label{eq:k-jury-c3}
-    K < \sympy{K3}
-\end{equation}
+$$\phi(z) = \sympy{poly.expand().factor(z)}$$
 
-Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
+$$
+\left\{\begin{array}{l}
+A_0 = \sympy{apoly[0]} = \sympy{napoly[0]}\\
+A_1 = \sympy{apoly[1]} = \sympy{napoly[1]}\\
+A_2 = \sympy{apoly[2]} = \sympy{napoly[2]}\\
+\end{array}
+\right.
+$$
 
-$$K < \sympy{sK3}$$
+$$|A_0| < |A_2|$$
+$$|\sympy{napoly[0]}| < |\sympy{napoly[2]}|$$
+$$0 < |\sympy{napoly[2]}| - |\sympy{napoly[0]}|$$
+
+Isolando $K$
 
 \begin{equation}\label{eq:k-jury-c3-numeric}
     K < \npy{nK3}
@@ -134,9 +164,8 @@ $$K < \sympy{sK3}$$
 Comparando o resultado das inequações \ref{eq:k-jury-c1-numeric}, \ref{eq:k-jury-c2-numeric} e \ref{eq:k-jury-c3-numeric} temos que o intervalo de restrição para K é
 
 \begin{equation}\label{eq:k-jury-result}
-    K < \sympy{round(min(nK1,nK2,nK3),4)}
+    K < \sympy{round(min(nK2,nK3),4)}
 \end{equation}
-
 
 \section{Estabilidade pelo Critério de Routh modificado}
 
@@ -154,12 +183,11 @@ Isolando $z$ temos:
 
 O que representar uma propriedade interessante da transformada bilinear. Substituindo \ref{eq:bilinear-transf-z} em
 
-$$G(w) < \sympy{sGw}$$
-$$G(w) < \sympy{sGw.simplify()}$$
-
+$$G(w) = \sympy{sGw}$$
+$$G(w) = \sympy{sGw.simplify()}$$
 
 Substituindo $\sympy{a1} = \sympy{na1}$, $\sympy{a0} = \sympy{na0}$, $\sympy{b1} = \sympy{nb1}$ temos
-$$G(w) < \sympy{nGww}$$
+$$G(w) = \sympy{nGww}$$
 
 A partir do qual temos a seguinte equação característica no $plano-w$:
 
@@ -167,14 +195,10 @@ A partir do qual temos a seguinte equação característica no $plano-w$:
     \phi_w(w) = \sympy{npolyw}
 \end{equation}
 
-...
-
 % TODO Gerar tabela de Roth
 % Em particular para um polinomio de grau dois basta olhar somente ultimo termo
 
-Com isto temos a seguinte expressão
-
-$$0 < \sympy{sK4}$$
+A partir da tabela de Roth obtemos a seguinte expressão $0 < \sympy{sK4}$. Isolando $K$:
 
 \begin{equation}\label{eq:k-roth-numeric}
     K < \npy{nK4}
@@ -182,10 +206,9 @@ $$0 < \sympy{sK4}$$
 
 Comparando a expressão da inequação \ref{eq:k-roth-numeric} e \ref{eq:k-jury-result}, observa-se que foi obtido um valor similar para ambos métodos.
 
+\section{Região de Oscilação Constante}
 
-\section{Oscilação Constante}
-
-Com base no resultado do método de Roth, se definimos $0 = \sympy{sK4}$ teremos $K = \npy{nK4}$. Com equação de trasnferência do sistema fica:
+Com base no resultado do método de Roth, se definimos $0 = \sympy{sK4}$, teremos $K = \npy{nK4}$. Substituindo $K$ na função de transferência temos:
 
 \begin{equation}\label{eq:closedloop-sys-oscilation}
     G_{2}(z) = \sympy{nGc.subs(K,nK4).simplify()}

@@ -1,11 +1,12 @@
 """
 Laboratory Experiment 1 - Script
+ - Jury Stability Criteria
 @author Rafael Lima
 """
 
-
 import sympy
 
+sympy.printing.printer.Printer().set_global_settings(precision=3)
 
 # Symbols
 z = sympy.symbols("z",complex=True)
@@ -21,15 +22,18 @@ sGo = K*(a1*z + a0)/((z-b1)*(z-a1))
 nGo = sGo.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 # Closed Loop Transfer Function
-sGc = (sGo/(sGo - 1)).simplify()
+sGc = (sGo/(sGo + 1)).simplify()
 nGc = sGc.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
 # Polynomy
 _,poly = sympy.fraction(sGc)
+poly = poly.expand().factor(z)
 npoly = poly.subs([(a1,na1),(a0,na0),(b1,nb1)])
+poles = sympy.solve(npoly,z) 
 
 # Jury Stability Criteria eq1
 eqJ1 = poly.subs(z,1)
+neqJ1 = npoly.subs(z,1)
 K1 = sympy.solve(eqJ1,K)[0]
 sK1 = K1.subs([(a1, sympy.UnevaluatedExpr(na1)),\
                (a0, sympy.UnevaluatedExpr(na0)),\
@@ -48,7 +52,8 @@ nK2 = sK2.doit()
 
 # Jury Stability Criteria eq3
 apoly = sympy.Poly(poly.expand(), z).all_coeffs()
-K3 = sympy.solve(apoly[0]-apoly[-1],K)[0]
+napoly = sympy.Poly(npoly.expand(), z).all_coeffs()
+K3 = sympy.solve(apoly[2]-apoly[0],K)[0]
 sK3 = K3.subs([(a1, sympy.UnevaluatedExpr(na1)),\
                (a0, sympy.UnevaluatedExpr(na0)),\
                (b1, sympy.UnevaluatedExpr(nb1))],\
