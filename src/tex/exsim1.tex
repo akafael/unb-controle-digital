@@ -206,20 +206,47 @@ A partir da tabela de Roth obtemos a seguinte expressão $0 < \sympy{sK4}$. Isol
 
 Comparando a expressão da inequação \ref{eq:k-roth-numeric} e \ref{eq:k-jury-result}, observa-se que foi obtido um valor similar para ambos métodos.
 
-\section{Região de Oscilação Constante}
+\section{Resposta do Sistema}
 
-Com base no resultado do método de Roth, se definimos $0 = \sympy{sK4}$, teremos $K = \npy{nK4}$. Substituindo $K$ na função de transferência temos:
+\subsection{Região de Oscilação Constante}
+
+Com base no resultado do critério de estabilidade de Juri, se definimos $K = \sympy{K3}= \npy{nK3}$. Substituindo $K$ na função de transferência temos:
 
 \begin{equation}\label{eq:closedloop-sys-oscilation}
     G_{2}(z) = \sympy{nGc.subs(K,nK4).simplify()}
 \end{equation}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-oscilation-inc.pdf}
+    \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{nK3}$}
+\end{figure}
 
-\section{Simulação}
+\subsection{Sistema Estável}
 
-blah
+De forma similar, pelo critério de Juri temos que, para todo valor de $0< K < \npy{nK3}$ o sistema é estável. Em particular para $K = \npy{0.5*nK3}$ temos a seguinte resposta
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-stable-inc.pdf}
+    \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{0.5*nK3}$}
+\end{figure}
+
+
+\subsection{Sistema Instável}
+
+Por fim, para todo valor de $K > \npy{nK3}$ o sistema é instável. Em particular para $K = \npy{2*nK3}$ temos
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-instable-inc.pdf}
+    \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{2*nK3}$}
+\end{figure}
+
 
 \section{Conclusão}
+
+
 
 % ------------------------------------------------------------------------------
 
@@ -228,6 +255,20 @@ blah
 % Referências
 % Acrescentadas no arquivo references.bib
 % para usa-las no texto batsa usar \citep{}
+
+% ------------------------------------------------------------------------------
+\section{Anexos}
+\subsection{Python}
+
+Para o avaliação da estabilidade usando o critério de Jury e o critério de Roth modificado foi utilizado o seguinte código em python:
+
+\inputminted{matlab}{../python/exsim1.py}
+
+\subsection{Octave}
+
+Para o desenho dos gráficos e simulações foi utlizado o \textit{octave} em conjunto do pacote \textit{control}. Segue o código referente para as simulações
+
+\inputminted{matlab}{../matlab/exsim1.m}
 
 
 % ------------------------------------------------------------------------------
