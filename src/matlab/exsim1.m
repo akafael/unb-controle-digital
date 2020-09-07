@@ -1,6 +1,8 @@
 %% EXSIM1 - Digital Control Experiment
 % @author Rafael Lima
 
+pkg load control % Required for octave
+
 %% Discrete Transfer Function definition
 Ts = 1
 Gnum = [0.3679 0.2642]
