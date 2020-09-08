@@ -1,66 +1,107 @@
 %% EXSIM1 - Digital Control Experiment
 % @author Rafael Lima
 
-% Get path from current file
-file_path = fileparts(mfilename('fullpath'))
 
+
+function exsim()
+    Gc = exsim1_oscilation()
+    Gc = exsim1_instable()
+    Gc = exsim1_stable()
+end
+
+function Gc = exsim1_closedloop(K)
 %% Discrete Transfer Function definition
-Ts = 1
-K = 1
-a1 = 0.3679
-a0 = 0.2642
-b1 = 1
-Gnum = [a1 a0]*K
-Gden = conv([1 -b1],[1 -a1])
-G = tf(Gnum,Gden,Ts)
-Gc = feedback(G)
-%grid off
-%step(Gc)
 
-%% Oscilation
-Ts = 1
-K = (1 - a1*b1)/a0 % Expression from Juri Stability Criteria Result
-Gnum = [a1 a0]*K
-Gden = conv([1 -b1],[1 -a1])
-G = tf(Gnum,Gden,Ts)
-Gc = feedback(G)
+    if nargin < 1
+        K = 1
+    end
 
-% Plot Figure
-fig = figure();
-grid off;
-step(Gc);
-title(["K = ", num2str(K)])
-print(fig, [file_path,"/../tex/img/exsim1-plot-oscilation.pdf"],"-dpdflatex")
+    Ts = 1
+    a1 = 0.3679
+    a0 = 0.2642
+    b1 = 1
+    Gnum = [a1 a0]*K
+    Gden = conv([1 -b1],[1 -a1])
+    G = tf(Gnum,Gden,Ts)
+    Gc = feedback(G)
+end
 
-%% Instable
-Ts = 1
-K = 2*(1 - a1*b1)/a0
-Gnum = [a1 a0]*K
-Gden = conv([1 -b1],[1 -a1])
-G = tf(Gnum,Gden,Ts)
-Gc = feedback(G)
+function Gc = exsim1_oscilation()
+    %% Oscilation
+    Ts = 1
+    a1 = 0.3679
+    a0 = 0.2642
+    b1 = 1
+    K = (1 - a1*b1)/a0 % Expression from Juri Stability Criteria Result
+    Gnum = [a1 a0]*K
+    Gden = conv([1 -b1],[1 -a1])
+    G = tf(Gnum,Gden,Ts)
+    Gc = feedback(G)
 
-% Plot Figure
-fig = figure();
-grid off;
-step(Gc);
-title(["K = ", num2str(K)])
-print(fig, [file_path,"/../tex/img/exsim1-plot-instable.pdf"],"-dpdflatex")
+    % Plot Figure
+    fig = figure();
+    step(Gc);
+    grid off;
+    title(["K = ", num2str(K)])
+    
+    % Get path from current file
+    file_path = fileparts(mfilename('fullpath'))
+    print(fig, [file_path,"/../tex/img/exsim1-plot-oscilation.png"],"-dpng")
+end
 
-%% Stable
-Ts = 1
-K = 0.5*(1 - a1*b1)/a0
-Gnum = [a1 a0]*K
-Gden = conv([1 -b1],[1 -a1])
-G = tf(Gnum,Gden,Ts)
-Gc = feedback(G)
+function fig = plot_step(Gc)
+%% PLOT_STEP Plot Step response for a given TF
+    fig = figure();
+    step(Gc);
+    grid off;
+    title(["K = ", num2str(K)])
+end
 
-% Plot Figure
-fig = figure();
-grid off;
-step(Gc);
-title(["K = ", num2str(K)])
-print(fig, [file_path,"/../tex/img/exsim1-plot-stable.pdf"],"-dpdflatex")
+function Gc = exsim1_instable()
+    %% Instable
+    Ts = 1
+    a1 = 0.3679
+    a0 = 0.2642
+    b1 = 1
+    K = 2*(1 - a1*b1)/a0
+    Gnum = [a1 a0]*K
+    Gden = conv([1 -b1],[1 -a1])
+    G = tf(Gnum,Gden,Ts)
+    Gc = feedback(G)
+
+    % Plot Figure
+    fig = figure();
+    step(Gc);
+    grid off;
+    title(["K = ", num2str(K)])
+
+    % Get path from current file
+    file_path = fileparts(mfilename('fullpath'))
+    print(fig, [file_path,"/../tex/img/exsim1-plot-instable.png"],"-dpng")
+end
+
+function Gc = exsim1_stable()
+    %% Stable
+    Ts = 1
+    a1 = 0.3679
+    a0 = 0.2642
+    b1 = 1
+    K = 0.5*(1 - a1*b1)/a0
+    Gnum = [a1 a0]*K
+    Gden = conv([1 -b1],[1 -a1])
+    G = tf(Gnum,Gden,Ts)
+    Gc = feedback(G)
+
+    % Plot Figure
+    fig = figure();
+    step(Gc);
+    grid off;
+    title(["K = ", num2str(K)])
+
+    % Get path from current file
+    file_path = fileparts(mfilename('fullpath'))
+    print(fig, [file_path,"/../tex/img/exsim1-plot-stable.png"],"-dpng")
+end
 
 %% Symbolic Representation
 %syms z

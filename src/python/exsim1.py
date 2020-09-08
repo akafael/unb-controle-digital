@@ -5,6 +5,7 @@ Laboratory Experiment 1 - Script
 """
 
 import sympy
+import numpy
 
 sympy.printing.printer.Printer().set_global_settings(precision=3)
 
@@ -75,9 +76,15 @@ nGww = sGww.subs([(a1,na1),(a0,na0),(b1,nb1)])
 polyw = den.expr
 npolyw = polyw.subs([(a1,na1),(a0,na0),(b1,nb1)])
 
-
 # TODO Generate Roth table
 
 sK4 = npolyw.subs(w,0)
 nK4 = sympy.solve(sK4,K)[0]
+
+# Oscilation
+sGs = sGc.subs(K,K3)
+nGs = nGc.subs(K,nK3)
+_,den = sympy.fraction(nGs.expand().simplify())
+opoles = sympy.solve(den,z)
+freq = 2*numpy.pi/sympy.arg(opoles[1])
 
