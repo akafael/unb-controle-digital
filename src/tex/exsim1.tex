@@ -159,6 +159,22 @@ Isolando $K$
     K < \npy{nK3}
 \end{equation}
 
+
+
+%\begin{table}[H]
+%    \centering
+%    $$
+%    \begin{array}{ccc}
+%     \hline
+%     w^0 & w^1 & w^2 \\
+%     \hline
+%     \sympy{npolyw.coeff(w,0)} &   \sympy{npolyw.coeff(w,1)} & \sympy{npolyw.coeff(w,2)}  \\
+%     \sympy{npolyw.coeff(w,2)} &   \sympy{npolyw.coeff(w,1)} & \sympy{npolyw.coeff(w,0)}  \\
+%     \hline
+%    \end{array}
+%    $$
+%\end{table}
+
 \subsection{Estabilidade}
 
 Comparando o resultado das inequações \ref{eq:k-jury-c1-numeric}, \ref{eq:k-jury-c2-numeric} e \ref{eq:k-jury-c3-numeric} temos que o intervalo de restrição para K é
@@ -195,13 +211,40 @@ A partir do qual temos a seguinte equação característica no $plano-w$:
     \phi_w(w) = \sympy{npolyw}
 \end{equation}
 
-% TODO Gerar tabela de Roth
-% Em particular para um polinomio de grau dois basta olhar somente ultimo termo
 
-A partir da tabela de Roth obtemos a seguinte expressão $0 < \sympy{sK4}$. Isolando $K$:
+\begin{table}[H]
+    \centering
+    $$
+    \begin{array}{l|cc}
+     \hline
+     w^2 & \sympy{npolyw.coeff(w,0)} & \sympy{npolyw.coeff(w,2)}  \\
+     w^1 & \sympy{npolyw.coeff(w,1)}  & 0 \\
+     w^0 & \sympy{npolyw.coeff(w,2)}  & 0 \\
+     \hline
+    \end{array}
+    $$
+\end{table}
+
+Como todos os termos da primeira coluna têm que ser maiores que $0$ para o sistema ser estável, então temos as seguintes condições:
+
+$$
+\left\{\begin{array}{l}
+ \sympy{npolyw.coeff(w,0)} > 0\\
+ \sympy{npolyw.coeff(w,1)} > 0\\
+ \sympy{npolyw.coeff(w,2)} > 0
+\end{array}
+\right.
+\Rightarrow
+\left\{\begin{array}{l}
+ K < \npy{sympy.solve(npolyw.coeff(w,0),K)[0]}\\
+ K < \npy{sympy.solve(npolyw.coeff(w,1),K)[0]}\\
+ K > 0
+\end{array}
+\right.
+$$
 
 \begin{equation}\label{eq:k-roth-numeric}
-    K < \npy{nK4}
+    0 < K < \npy{nK3}
 \end{equation}
 
 Comparando a expressão da inequação \ref{eq:k-roth-numeric} e \ref{eq:k-jury-result}, observa-se que foi obtido um valor similar para ambos métodos.
@@ -229,7 +272,7 @@ Na figura \ref{fig:ex1-plot-oscilation} temos a resposta ao degrau junto de uma 
 \begin{figure}[H]
     \label{fig:ex1-plot-oscilation}
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim1-plot-oscilation.png}
+    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-oscilation.png}
     \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{nK3}$}
 \end{figure}
 
@@ -239,7 +282,7 @@ De forma similar, pelo critério de Juri temos que, para todo valor de $0< K < \
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim1-plot-stable.png}
+    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-stable.png}
     \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{0.5*nK3}$}
 \end{figure}
 
@@ -249,7 +292,7 @@ Por fim, para todo valor de $K > \npy{nK3}$ o sistema é instável. Em particula
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim1-plot-instable.png}
+    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-instable.png}
     \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{2*nK3}$}
 \end{figure}
 
