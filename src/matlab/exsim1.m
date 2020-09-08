@@ -1,12 +1,10 @@
 %% EXSIM1 - Digital Control Experiment
 % @author Rafael Lima
 
-
-
-function exsim()
-    Gc = exsim1_oscilation()
-    Gc = exsim1_instable()
-    Gc = exsim1_stable()
+function K = exsim()
+    Gc1 = exsim1_oscilation()
+    Gc2 = exsim1_instable()
+    Gc3 = exsim1_stable()
 end
 
 function Gc = exsim1_closedloop(K)
@@ -26,8 +24,16 @@ function Gc = exsim1_closedloop(K)
     Gc = feedback(G)
 end
 
+function fig = plot_step(Gc,K)
+%% PLOT_STEP Plot Step response for a given TF
+    fig = figure();
+    step(Gc);
+    grid off;
+    title(["K = ", num2str(K)])
+end
+
 function Gc = exsim1_oscilation()
-    %% Oscilation
+%% Oscilation
     Ts = 1
     a1 = 0.3679
     a0 = 0.2642
@@ -37,28 +43,31 @@ function Gc = exsim1_oscilation()
     Gden = conv([1 -b1],[1 -a1])
     G = tf(Gnum,Gden,Ts)
     Gc = feedback(G)
+    z = pole(Gc)
+    w = arg(z)
+    phase = angle(z)
 
     % Plot Figure
     fig = figure();
-    step(Gc);
+    t = 0:0.1:20
+    step(Gc,t);
     grid off;
     title(["K = ", num2str(K)])
-    
+
+    hold on;
+    y = 1+cos(w(1)*t+pi)
+    plot(t,y)
+    hold off;
+    legend()
+
     % Get path from current file
     file_path = fileparts(mfilename('fullpath'))
     print(fig, [file_path,"/../tex/img/exsim1-plot-oscilation.png"],"-dpng")
 end
 
-function fig = plot_step(Gc)
-%% PLOT_STEP Plot Step response for a given TF
-    fig = figure();
-    step(Gc);
-    grid off;
-    title(["K = ", num2str(K)])
-end
 
 function Gc = exsim1_instable()
-    %% Instable
+%% Instable
     Ts = 1
     a1 = 0.3679
     a0 = 0.2642
@@ -71,7 +80,8 @@ function Gc = exsim1_instable()
 
     % Plot Figure
     fig = figure();
-    step(Gc);
+    t = 0:0.1:20
+    step(Gc,t);
     grid off;
     title(["K = ", num2str(K)])
 
@@ -81,7 +91,7 @@ function Gc = exsim1_instable()
 end
 
 function Gc = exsim1_stable()
-    %% Stable
+%% Stable
     Ts = 1
     a1 = 0.3679
     a0 = 0.2642

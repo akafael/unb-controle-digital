@@ -26,7 +26,7 @@ OUTPUT = $(addprefix notes/, $(notdir ${OBJ}))
 ###############################################################################
 
 # One rule to rule them all
-all: ${PDFOUTPUT}
+all: exsim1 ${PDFOUTPUT}
 
 # Print help for Makefile commands
 .PHONY: help

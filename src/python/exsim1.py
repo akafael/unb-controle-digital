@@ -86,5 +86,5 @@ sGs = sGc.subs(K,K3)
 nGs = nGc.subs(K,nK3)
 _,den = sympy.fraction(nGs.expand().simplify())
 opoles = sympy.solve(den,z)
-freq = 2*numpy.pi/sympy.arg(opoles[1])
+freq = sympy.arg(opoles[1])/(2*numpy.pi)
 

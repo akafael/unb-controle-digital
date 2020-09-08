@@ -216,9 +216,20 @@ Com base no resultado do critério de estabilidade de Juri, se definimos $K = \s
     G_{2}(z) = \sympy{nGc.subs(K,nK4).simplify()}
 \end{equation}
 
+Que possui os polos 
+$$p_0 = \sympy{opoles[0]}$$
+$$p_1 = \sympy{opoles[1]}$$.
+
+Desta forma podemos obter a frequência de oscilação do sistema como $f = \frac{w}{2\pi}$ em que $w = ||p_0|| = ||p_1||$.
+
+$$f = \frac{||p_0||}{2\pi} = \frac{\npy{sympy.arg(opoles[1])}\ rad/s}{2\pi} = \npy{freq} Hz$$
+
+Na figura \ref{fig:ex1-plot-oscilation} temos a resposta ao degrau junto de uma senoide com frequência $f = \npy{freq} Hz$. Note a resposta segue a aproximadamente a mesma forma da senoide em diversos pontos.
+
 \begin{figure}[H]
+    \label{fig:ex1-plot-oscilation}
     \centering
-    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-oscilation.png}
+    \includegraphics[width=0.9\linewidth]{img/exsim1-plot-oscilation.png}
     \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{nK3}$}
 \end{figure}
 
@@ -228,7 +239,7 @@ De forma similar, pelo critério de Juri temos que, para todo valor de $0< K < \
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-stable.png}
+    \includegraphics[width=0.9\linewidth]{img/exsim1-plot-stable.png}
     \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{0.5*nK3}$}
 \end{figure}
 
@@ -238,7 +249,7 @@ Por fim, para todo valor de $K > \npy{nK3}$ o sistema é instável. Em particula
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{img/exsim1-plot-instable.png}
+    \includegraphics[width=0.9\linewidth]{img/exsim1-plot-instable.png}
     \caption{Resposta ao Degrau Unitário do Sistema com $K = \npy{2*nK3}$}
 \end{figure}
 
@@ -262,13 +273,13 @@ Por fim, para todo valor de $K > \npy{nK3}$ o sistema é instável. Em particula
 
 Para o avaliação da estabilidade usando o critério de Jury e o critério de Roth modificado foi utilizado o seguinte código em python:
 
-\inputminted{matlab}{../python/exsim1.py}
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{python}{../python/exsim1.py}
 
 \subsection{Octave}
 
 Para o desenho dos gráficos e simulações foi utlizado o \textit{octave} em conjunto do pacote \textit{control}. Segue o código referente para as simulações
 
-\inputminted{matlab}{../matlab/exsim1.m}
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim1.m}
 
 
 % ------------------------------------------------------------------------------
