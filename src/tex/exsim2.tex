@@ -1,0 +1,100 @@
+% Pacotes e configurações padrão do estilo ``article''\
+% -------------------------------------
+\documentclass[a4paper,11pt]{article}
+% Layout
+% ------------------------------------------------------------------------------
+\input{relat_layout.tex}
+
+%\usepackage{circuitikz}
+\usepackage[makestderr]{pythontex}
+
+\title{Laboratório 2} % Define o título do Relatório
+\author{Rafael Lima}
+
+% Definições Auxiliares ( Macros próprias )
+% ------------------------------------------------------------------------------
+%\input{relat_aux.tex} % Arquivo com minhas macros
+\newcommand{\npy}[1]{\sympy{round(#1,4)}}
+% ----------------------------------~>ø<~---------------------------------------
+\begin{document}
+% Capa e Índice ----------------------------------------------------------------
+\input{relat_capa.tex} % Capa para UnB
+% Conteúdo ---------------------------------------------------------------------
+
+\section{Comparação entre diferentes métodos de Discretização}
+
+% Código fonte colocado a parte para facilitar validação dentro do ipython
+\begin{sympycode}
+# Get Source Code
+sys.path.insert(1, '../../')
+from src.python.exsim2 import *
+\end{sympycode}
+
+\begin{equation}
+\sympy{nGo}
+\end{equation}
+
+\subsection{Transformada z de G(s) com segurador de ordem zero em série}
+\subsection{Regra Retangular para frente}
+
+$$G(s)|_{s = \sympy{Gzb}} = \sympy{Gob}$$
+
+\begin{equation}
+    \sympy{simplifyFraction(Gof,z)}
+\end{equation}
+
+\subsection{Regra Retangular para trás}
+
+$$G(s)|_{s = \sympy{Gzb}} = \sympy{Gob}$$
+
+\begin{equation}
+    \sympy{simplifyFraction(Gob,z)}
+\end{equation}
+
+\subsection{Regra trapezoidal}
+
+$$G(s)|_{s = \sympy{Gzd}} = \sympy{God}$$
+
+% TODO Corrigir resultado: expressão ficou muito grande na tela
+\begin{equation}
+    \sympy{simplifyFraction(God,z)}
+\end{equation}
+
+\subsection{Mapeamento exato de pólos e zeros}
+
+
+\section{Projeto Sistema em Tempo Discreto}
+\subsection{Sistema em Malha Fechada}
+\subsection{Resposta em frequência}
+\subsection{Ação de Controle}
+\subsection{Simulink}
+\subsection{}
+
+\section{Conclusão}
+
+% ------------------------------------------------------------------------------
+
+\nocite{sympy}
+\bibliographystyle{abbrv}
+\bibliography{references}
+% Referências
+% Acrescentadas no arquivo references.bib
+% para usa-las no texto batsa usar \citep{}
+
+% ------------------------------------------------------------------------------
+\section{Anexos}
+\subsection{Python}
+
+Para o avaliação da estabilidade usando o critério de Jury e o critério de Roth modificado foi utilizado o seguinte código em python:
+
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{python}{../python/exsim2.py}
+
+\subsection{Octave}
+
+Para o desenho dos gráficos e simulações foi utlizado o \textit{octave} em conjunto do pacote \textit{control}. Segue o código referente para as simulações
+
+%\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2.m}
+
+
+% ------------------------------------------------------------------------------
+\end{document}
