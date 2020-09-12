@@ -9,6 +9,8 @@
 ###############################################################################
 
 OCTAVE = octave
+MATLAB_DIR = src/matlab
+MATLAB = matlab -nodesktop -nosplash -sd $(MATLAB_DIR) <
 
 # LaTeX Report ----------------------------------------------------------------
 TEX = pdflatex
@@ -26,7 +28,7 @@ OUTPUT = $(addprefix notes/, $(notdir ${OBJ}))
 ###############################################################################
 
 # One rule to rule them all
-all: exsim1 ${PDFOUTPUT}
+all: ${PDFOUTPUT}
 
 # Print help for Makefile commands
 .PHONY: help
@@ -64,7 +66,7 @@ src/tex/%.pdf: src/tex/%.tex src/tex/%.pytexcode
 	cd $(dir $<) && $(TEX) $(TEXFLAGS) $(notdir $<)
 
 # Implicity Rule to Compile Python Code inside tex file
-src/tex/%.pytexcode: src/tex/%.tex src/tex/relat_capa.tex src/tex/relat_layout.tex src/tex/references.bib
+src/tex/%.pytexcode: src/tex/%.tex src/python/%.py src/tex/relat_capa.tex src/tex/relat_layout.tex src/tex/references.bib
 	cd $(dir $<) &&\
 	$(TEX) $(TEXFLAGS) $(notdir $<) &&\
    	pythontex $(notdir $<)

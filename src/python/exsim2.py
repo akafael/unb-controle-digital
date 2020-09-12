@@ -7,9 +7,14 @@ Laboratory Experiment 1 - Script
 import sympy
 import numpy
 
+class tf:
+    sym = 1
+    num = 1
+
+
 def simplifyFraction(fraction,s):
     """
-    Simplify Fraction
+    Expand numerator and denominator from given fraction
     """
     num,den = sympy.fraction(fraction.expand().simplify())
     num = sympy.Poly(num,s)
@@ -31,8 +36,11 @@ na1 = 3
 nT = 0.1
 
 # Open Loop Transfer Function
-sGo = 1/((s+a1)*(s+a0))
-nGo = 1/((s+na1)*(s+na0))
+sGo = 1/((s+na1)*(s+na0))
+
+# Z Transform (From table)
+zGo = z*(sympy.exp(-a0*T)-sympy.exp(-a1*T))/((a1-a0)*(z-sympy.exp(-a0*T))*(z-sympy.exp(-a1*T)))
+nzGo = zGo.subs([(a0,na0),(a1,na1)])
 
 # Forward Rectangle
 Gzf = (z -1)/T

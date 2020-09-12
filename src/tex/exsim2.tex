@@ -5,7 +5,7 @@
 % ------------------------------------------------------------------------------
 \input{relat_layout.tex}
 
-%\usepackage{circuitikz}
+\usepackage{circuitikz}
 \usepackage[makestderr]{pythontex}
 
 \title{Laboratório 2} % Define o título do Relatório
@@ -30,35 +30,71 @@ sys.path.insert(1, '../../')
 from src.python.exsim2 import *
 \end{sympycode}
 
-\begin{equation}
-\sympy{nGo}
+Dado a função de transferência \ref{eq:ex2-tf}
+
+\begin{equation}\label{eq:ex2-tf}
+\sympy{sGo}
 \end{equation}
 
 \subsection{Transformada z de G(s) com segurador de ordem zero em série}
-\subsection{Regra Retangular para frente}
 
-$$G(s)|_{s = \sympy{Gzb}} = \sympy{Gob}$$
+Pela tabela, temos que a transformada z de \ref{eq:ex2-tf} é
+
+$$Z\{G(s)\} = \sympy{nzGo} = \sympy{nzGo.subs(T,nT)}$$
+$$Z\{G(s)\} = \sympy{nzGo.subs(T,nT)}$$
+
 
 \begin{equation}
-    \sympy{simplifyFraction(Gof,z)}
+  G_f(z) =  G(z)|_{s = \sympy{Gzf}} = \sympy{Gof}
 \end{equation}
+
+\subsection{Regra Retangular para frente}
+
+$$
+G_b(z) =  G(z)|_{s = \sympy{Gzb}} = \sympy{Gob}
+$$
+
+\begin{equation}
+    G_b(z) = \sympy{simplifyFraction(Gob,z)}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-forward.png}
+    \caption{Resposta ao Degrau Unitário do Sistema discretizado pela regra retangular para frente}
+\end{figure}
 
 \subsection{Regra Retangular para trás}
 
-$$G(s)|_{s = \sympy{Gzb}} = \sympy{Gob}$$
+$$
+G_f(z) =  G(z)|_{s = \sympy{Gzf}} = \sympy{Gof}
+$$
 
 \begin{equation}
-    \sympy{simplifyFraction(Gob,z)}
+    G_f(z) = \sympy{simplifyFraction(Gof,z)}
 \end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-backward.png}
+    \caption{Resposta ao Degrau Unitário do Sistema discretizado pela regra retangular para trás}
+\end{figure}
 
 \subsection{Regra trapezoidal}
 
-$$G(s)|_{s = \sympy{Gzd}} = \sympy{God}$$
+$$
+G_d(z) =  G(z)|_{s = \sympy{Gzd}} = \sympy{God}
+$$
 
-% TODO Corrigir resultado: expressão ficou muito grande na tela
 \begin{equation}
-    \sympy{simplifyFraction(God,z)}
+    G_d(z) = \sympy{simplifyFraction(God,z)}
 \end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-trap.png}
+    \caption{Resposta ao Degrau Unitário do Sistema discretizado pela regra trapezoidal}
+\end{figure}
 
 \subsection{Mapeamento exato de pólos e zeros}
 
@@ -89,9 +125,9 @@ Para o avaliação da estabilidade usando o critério de Jury e o critério de R
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{python}{../python/exsim2.py}
 
-\subsection{Octave}
+\subsection{Matlab}
 
-Para o desenho dos gráficos e simulações foi utlizado o \textit{octave} em conjunto do pacote \textit{control}. Segue o código referente para as simulações
+Para o desenho dos gráficos e simulações foi utilizado o \textit{octave} em conjunto do pacote \textit{control}. Segue o código referente para as simulações
 
 %\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2.m}
 

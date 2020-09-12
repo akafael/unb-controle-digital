@@ -4,10 +4,14 @@
 ##
 
 # LaTeX Temporary files
-*.aux, *.log, *.out, *.toc
+*.aux
+*.log
+*.out
+*.toc
 
 # Pythotex temporary files
-*.pytxcode, pythotex*
+*.pytxcode
+pythotex*
 
 # Minted temporary files
 _minted*
