@@ -53,3 +53,6 @@ Gob = sGo.subs(s,Gzb)
 # Trapezoid
 Gzd = 2*(z-1)/(T*(z+1))
 God = sGo.subs(s,Gzd)
+
+#
+Gom = 1/((z+exp(na0*nT))*(z+exp(na1*nT)))

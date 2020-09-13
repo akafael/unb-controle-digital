@@ -38,6 +38,21 @@ Dado a função de transferência \ref{eq:ex2-tf}
 
 \subsection{Transformada z de G(s) com segurador de ordem zero em série}
 
+Aplicando a discretização temos:
+
+$$
+\begin{array}{lcl}
+    Z(\frac{1-e^{-Ts}}{s}G(z)) &=& Z(\frac{1}{s}G(z)) - Z(\frac{e^{-Ts}}{s}G(z))\\
+    &=& Z(\frac{1}{s}G(z)) - (z^{-1})Z(\frac{1}{s}G(z))\\
+    &=& (1 - z^{-1})Z(\frac{1}{s}G(z))\\
+    &=& (1 - z^{-1})Z(\sympy{(1/s)*sGo})\\
+\end{array}
+$$
+
+Fatorando o termo $\sympy{(1/s)*sGo}$ temos
+
+
+
 Pela tabela, temos que a transformada z de \ref{eq:ex2-tf} é
 
 $$Z\{G(s)\} = \sympy{nzGo} = \sympy{nzGo.subs(T,nT)}$$

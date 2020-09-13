@@ -3,7 +3,7 @@
 
 % Get path from current file and generate absolute path
 file_path = fileparts(mfilename('fullpath'))
-img_path = [file_path,"/../../tex/"]
+img_path = strcat(file_path,"/../../tex/img/")
 
 % Define Symbols
 syms s z T
@@ -18,6 +18,9 @@ G = tf(Gnum,Gden)
 
 % Generate Symbolic expression for G
 sG = poly2sym(Gnum,s)/poly2sym(Gden,s)
+
+%% Transformada Z
+
 
 %% Forward Rectangle
 
@@ -54,6 +57,11 @@ num = sym2poly(num)
 den = sym2poly(den)
 Gd = tf(num,den,Ts)
 
+%% Match Poles
+num = 1
+den = conv([1 exp(-a1*Ts)],[1 exp(-a0*Ts)])
+Gm = tf(num,den,Ts)
+
 %% Graphical Analysis
 
 fig = figure()
@@ -62,7 +70,7 @@ hold on;
 step(G,':')
 hold off;
 legend("Gf","G")
-print(fig, [img_path,"/exsim2-plot-g-forward.png"],"-dpng")
+print(fig, strcat(img_path,"exsim2-plot-g-forward.png"),"-dpng")
 
 fig = figure()
 step(Gb)
@@ -70,7 +78,7 @@ hold on;
 step(G,':')
 hold off;
 legend("Gb","G")
-print(fig, [img_path,"/exsim2-plot-g-backward.png"],"-dpng")
+print(fig, strcat(img_path,"exsim2-plot-g-backward.png"),"-dpng")
 
 fig = figure()
 step(Gd)
@@ -78,4 +86,4 @@ hold on;
 step(G,':')
 hold off;
 legend("Gd","G")
-print(fig, [img_path,"/exsim2-plot-g-trap.png"],"-dpng")
+print(fig, strcat(img_path,"exsim2-plot-g-trap.png"),"-dpng")
