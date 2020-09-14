@@ -142,10 +142,30 @@ A função de transferência têm como polos $s_1=-2$ e $s_2=-3$. Mapeando no pl
 '
 \subsection{Sistema em Malha Fechada}
 
-$$G_{mf}(s) = \sympy{G1*G2/(1+G2*H2)}$$
-$$G_{mf}(s) = \sympy{G2mf}$$
+Dado $G(s)$
+
+\begin{equation}
+    G(s) = \frac{Y(s)}{U(s)} \sympy{G2}
+\end{equation}
+
+\begin{equation}
+    U(s) = \sympy{G1}U_C(s) - \sympy{H2}Y(s)
+\end{equation}
+
+Aplicando o sinal de controle e fechando a malha obtemos:
+
+$$G_{mf}(s) = \frac{Y(s)}{U_c(s)} = \sympy{G2mf}$$
 
 Substituindo $a = \sympy{2*w0}$ e $b = \sympy{w0/2}$ temos
+
+$$
+G_{mf}(s) = \sympy{G2mf.subs([(a,2*w0),(b,w0/2)])}
+$$
+$$
+G_{mf}(s) = \sympy{G2mf.subs([(a,2*w0),(b,w0/2),(kc,2*J*w0*w0/kp)])}
+$$
+
+Simplificando
 
 \begin{equation}
     G_{mf}(s) = \sympy{simplifyFraction(G2mf.subs([(a,2*w0),(b,w0/2),(kc,2*J*w0*w0/kp)]),s)}
@@ -156,7 +176,7 @@ Substituindo $a = \sympy{2*w0}$ e $b = \sympy{w0/2}$ temos
 \subsection{Simulink}
 \subsection{}
 
-\section{Conclusão}
+%\section{Conclusão}
 
 % ------------------------------------------------------------------------------
 
@@ -172,7 +192,7 @@ Substituindo $a = \sympy{2*w0}$ e $b = \sympy{w0/2}$ temos
 \section{Anexos}
 \subsection{Python}
 
-Para o avaliação da estabilidade usando o critério de Jury e o critério de Roth modificado foi utilizado o seguinte código em python:
+Para os calculos e demonstrações foi utilizado o seguinte código em python:
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{python}{../python/exsim2.py}
 

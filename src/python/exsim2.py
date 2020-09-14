@@ -67,15 +67,15 @@ Gob = sGo.subs(s,Gzb)
 Gzd = 2*(z-1)/(T*(z+1))
 God = sGo.subs(s,Gzd)
 
-#
+# Matched Poles
 Gom = 1/((z+sympy.exp(na0*nT))*(z+sympy.exp(na1*nT)))
 
-
-#
+# Question 2
 a,b,kp,kc,J,w0 = sympy.symbols("a b k_P k_C J omega_0")
 
 G2 = kp/(J*s*s)
-H2 = kc*(s+a)/(s+b)
+H2 = kc*(s+b)/(s+a)
 G1 = b*kc/a
 
 G2mf = G1*(G2/(1+G2*H2))
+Gsmfd = 
