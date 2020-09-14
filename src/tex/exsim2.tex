@@ -173,19 +173,64 @@ Simplificando
 
 \subsection{Resposta em frequência}
 \subsection{Ação de Controle}
-\subsection{Simulink}
-\subsection{}
 
-%\section{Conclusão}
+Dado seguinte expressão da ação de controle:
+$$U(s) = \sympy{G1}U_C(s) - \sympy{H2}Y(s)$$
+
+Podemos reescrever como:
+$$U(s) = kc\left( \frac{b}{a}U_C(s) - \frac{(s+b-a+a)}{s+a}Y(s) \right)$$
+$$U(s) = kc\left( \frac{b}{a}U_C(s) - \frac{(s+a)}{s+a}Y(s) - \frac{(b-a)}{s+a}Y(s) \right)$$
+$$U(s) = kc\left( \frac{b}{a}U_C(s) - Y(s) + \frac{(a-b)}{s+a}Y(s) \right)$$
+
+Por fim temos
+\begin{equation}
+    U(s) = kc\left( \frac{b}{a}U_C(s) - Y(s) + \frac{(a-b)}{(s+a)}Y(s) \right)
+\end{equation}
+
+\subsection{Simulink}
+
+\begin{figure}[H]
+    \centering
+    \label{fig:ex2-simulink}
+    \includegraphics[width=0.8\linewidth]{img/exsim2model.png}
+    \caption{Diagrama de Blocos do Sistema no Simulink}
+\end{figure}
+
+
+\subsubsection{Simulação}
+
+Simulando o sistema da figura \ref{fig:ex2-simulink} para os períodos $T=0.2s$ , $T=0.5s$ e $T=1.08s$ 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-sim-t02.png}
+    \caption{Resposta Simulação $T=0.2s$}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-sim-t05.png}
+    \caption{Resposta Simulação $T=0.5s$}
+\end{figure}
+
+No entanto para $t=1.08$ observamos que o sistema ficou instável.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-sim-t108.png}
+    \caption{Resposta Simulação $T=1.08s$}
+\end{figure}
+
+%%\section{Conclusão}
 
 % ------------------------------------------------------------------------------
 
-\nocite{sympy}
 \bibliographystyle{abbrv}
 \bibliography{references}
 % Referências
 % Acrescentadas no arquivo references.bib
 % para usa-las no texto batsa usar \citep{}
+\nocite{sympy}
 
 % ------------------------------------------------------------------------------
 \newpage
@@ -199,9 +244,15 @@ Para os calculos e demonstrações foi utilizado o seguinte código em python:
 \newpage
 \subsection{Matlab}
 
+\subsubsection{Parte 1}
 Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab}. Segue o código referente para as simulações
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2.m}
+
+\subsubsection{Parte 2}
+Na segunda parte foi utilizado uma versão modificada do script em \textit{Matlab} fornecido pelo professor:
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2script.m}
+
 
 
 % ------------------------------------------------------------------------------

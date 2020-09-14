@@ -1,5 +1,8 @@
 %% EXSIM2 
 
+% Clean Up Everything
+clear
+close all
 
 % Get path from current file and generate absolute path
 file_path = fileparts(mfilename('fullpath'))
@@ -104,13 +107,31 @@ hold off;
 legend("Gm","G")
 print(fig, strcat(img_path,"exsim2-plot-g-matched.png"),"-dpng")
 
+close all
+
+%% Question 2
+syms a b kp kc J w0
+
+sG2 = kp/(J*s*s)
+sH2 = kc*(s+b)/(s+a)
+sG1 = b*kc/a
+
+sG2mf = sG1*(sG2/(1+sG2*sH2))
+G2mf = subs(sG2mf,[a b kc],[2*w0 w0/2 2*J*w0*w0/kp])
+
+% Convert Simbolic Expression to TF
+[num,den] = numden(subs(G2mf,w0,1))
+num = sym2poly(num)
+den = sym2poly(den)
+G2 = tf(num,den,Ts)
+
+fig = figure()
+margin(G2)
+print(fig, strcat(img_path,"exsim2-plot-bode2.png"),"-dpng")
+
 %% Simulink Simulation
 
-% TODO Run Simulation
-% BUG Unable to run simulation
+% Export Model as PNG
 modelFileName = 'exsim2model'
-%sim(modelFileName) %
-
-% TODO Export Model as PDF
-pictureFileName = strcat(img_path,modelFileName,'.pdf');   % Generate name from model name
-%print(['-s',modelFileName],'-depsc',pictureFileName);      % Generate PDF
+pictureFileName = strcat(img_path,modelFileName,'.png');   % Generate name from model name
+print(['-s',modelFileName],'-dpng',pictureFileName);      % Generate PDF

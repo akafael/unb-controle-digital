@@ -77,5 +77,4 @@ G2 = kp/(J*s*s)
 H2 = kc*(s+b)/(s+a)
 G1 = b*kc/a
 
-G2mf = G1*(G2/(1+G2*H2))
-Gsmfd = 
+G2mf = G1*(G2/(1+G2*H2)) 
