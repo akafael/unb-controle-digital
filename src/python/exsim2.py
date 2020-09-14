@@ -1,7 +1,7 @@
 """
-Laboratory Experiment 1 - Script
- - Jury Stability Criteria
-@author Rafael Lima
+Laboratory Experiment 2 - Script
+ - Discretization
+ @author Rafael Lima
 """
 
 import sympy
@@ -12,16 +12,30 @@ class tf:
     num = 1
 
 
-def simplifyFraction(fraction,s):
+def simplifyFraction(G,s):
     """
     Expand numerator and denominator from given fraction
     """
-    num,den = sympy.fraction(fraction.expand().simplify())
+    num,den = sympy.fraction(G.expand().simplify())
     num = sympy.Poly(num,s)
     den = sympy.Poly(den,s)
     
     return (num/den)
 
+
+def partialFraction(G,s):
+    """
+    Split Fraction into several factors using residues theorem
+    """
+    # Find Poles
+    poles = sympy.solve(sympy.fraction(G.expand().simplify())[1],s)
+
+    # Find Resudues
+    Gp = 0
+    for p in poles:
+        Gp = Gp + (G*(s-p)).subs(s,p)/(s-p)
+
+    return Gp
 
 sympy.printing.printer.Printer().set_global_settings(precision=3)
 
@@ -39,8 +53,7 @@ nT = 0.1
 sGo = 1/((s+na1)*(s+na0))
 
 # Z Transform (From table)
-zGo = z*(sympy.exp(-a0*T)-sympy.exp(-a1*T))/((a1-a0)*(z-sympy.exp(-a0*T))*(z-sympy.exp(-a1*T)))
-nzGo = zGo.subs([(a0,na0),(a1,na1)])
+zGo = z/(3*(z-sympy.exp(-3*T))) - z/(2*(z-sympy.exp(-2*T))) + z/(6*((z-1)))
 
 # Forward Rectangle
 Gzf = (z -1)/T
@@ -55,4 +68,14 @@ Gzd = 2*(z-1)/(T*(z+1))
 God = sGo.subs(s,Gzd)
 
 #
-Gom = 1/((z+exp(na0*nT))*(z+exp(na1*nT)))
+Gom = 1/((z+sympy.exp(na0*nT))*(z+sympy.exp(na1*nT)))
+
+
+#
+a,b,kp,kc,J,w0 = sympy.symbols("a b k_P k_C J omega_0")
+
+G2 = kp/(J*s*s)
+H2 = kc*(s+a)/(s+b)
+G1 = b*kc/a
+
+G2mf = G1*(G2/(1+G2*H2))

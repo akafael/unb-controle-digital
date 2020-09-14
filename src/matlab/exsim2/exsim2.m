@@ -19,8 +19,8 @@ G = tf(Gnum,Gden)
 % Generate Symbolic expression for G
 sG = poly2sym(Gnum,s)/poly2sym(Gden,s)
 
-%% Transformada Z
-
+%% ZOH
+Gz = c2d(G,Ts,'zoh')
 
 %% Forward Rectangle
 
@@ -60,9 +60,17 @@ Gd = tf(num,den,Ts)
 %% Match Poles
 num = 1
 den = conv([1 exp(-a1*Ts)],[1 exp(-a0*Ts)])
-Gm = tf(num,den,Ts)
+Gm = c2d(G,Ts,'matched')
 
 %% Graphical Analysis
+
+fig = figure()
+step(Gz)
+hold on;
+step(G,':')
+hold off;
+legend("Gz","G")
+print(fig, strcat(img_path,"exsim2-plot-g-zoh.png"),"-dpng")
 
 fig = figure()
 step(Gf)
@@ -87,3 +95,22 @@ step(G,':')
 hold off;
 legend("Gd","G")
 print(fig, strcat(img_path,"exsim2-plot-g-trap.png"),"-dpng")
+
+fig = figure()
+step(Gm)
+hold on;
+step(G,':')
+hold off;
+legend("Gm","G")
+print(fig, strcat(img_path,"exsim2-plot-g-matched.png"),"-dpng")
+
+%% Simulink Simulation
+
+% TODO Run Simulation
+% BUG Unable to run simulation
+modelFileName = 'exsim2model'
+%sim(modelFileName) %
+
+% TODO Export Model as PDF
+pictureFileName = strcat(img_path,modelFileName,'.pdf');   % Generate name from model name
+%print(['-s',modelFileName],'-depsc',pictureFileName);      % Generate PDF

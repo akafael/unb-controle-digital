@@ -49,19 +49,28 @@ $$
 \end{array}
 $$
 
-Fatorando o termo $\sympy{(1/s)*sGo}$ temos
+Fatorando o termo $\sympy{(1/s)*sGo}$ pelo método de frações parciais temos
 
+\begin{equation}\label{eq:ex2-partialfrac}
+    \sympy{sGo/s} = \sympy{partialFraction(sGo/s,s)}
+\end{equation}
 
+Pela tabela, temos que a transformada z de \ref{eq:ex2-partialfrac} é
 
-Pela tabela, temos que a transformada z de \ref{eq:ex2-tf} é
+$$Z\{G(s)\} = \sympy{zGo}$$
+$$Z\{G(s)\} = \sympy{zGo.combsimp()}$$
 
-$$Z\{G(s)\} = \sympy{nzGo} = \sympy{nzGo.subs(T,nT)}$$
-$$Z\{G(s)\} = \sympy{nzGo.subs(T,nT)}$$
-
+Logo, substituindo $T = \sympy{nT}$, temos:
 
 \begin{equation}
-  G_f(z) =  G(z)|_{s = \sympy{Gzf}} = \sympy{Gof}
+  G_o(z) = \sympy{zGo.combsimp().subs(T,nT)}
 \end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-zoh.png}
+    \caption{Resposta ao Degrau Unitário do Sistema Discretizado com um Segurador de Ordem Zero}
+\end{figure}
 
 \subsection{Regra Retangular para frente}
 
@@ -113,9 +122,35 @@ $$
 
 \subsection{Mapeamento exato de pólos e zeros}
 
+A função de transferência têm como polos $s_1=-2$ e $s_2=-3$. Mapeando no plano z temos $z = e^{sT}$
 
 \section{Projeto Sistema em Tempo Discreto}
+
+\begin{equation}
+    G(s) = \frac{Y(s)}{U(s)} = \sympy{G2}
+\end{equation}
+
+\begin{equation}
+    U(s) = \sympy{G1}U_C(s) - \sympy{H2}Y(s)
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-matched.png}
+    \caption{Resposta ao Degrau Unitário do Sistema discretizado por mapeamento exato dos polos}
+\end{figure}
+'
 \subsection{Sistema em Malha Fechada}
+
+$$G_{mf}(s) = \sympy{G1*G2/(1+G2*H2)}$$
+$$G_{mf}(s) = \sympy{G2mf}$$
+
+Substituindo $a = \sympy{2*w0}$ e $b = \sympy{w0/2}$ temos
+
+\begin{equation}
+    G_{mf}(s) = \sympy{simplifyFraction(G2mf.subs([(a,2*w0),(b,w0/2),(kc,2*J*w0*w0/kp)]),s)}
+\end{equation}
+
 \subsection{Resposta em frequência}
 \subsection{Ação de Controle}
 \subsection{Simulink}
@@ -133,6 +168,7 @@ $$
 % para usa-las no texto batsa usar \citep{}
 
 % ------------------------------------------------------------------------------
+\newpage
 \section{Anexos}
 \subsection{Python}
 
@@ -140,11 +176,12 @@ Para o avaliação da estabilidade usando o critério de Jury e o critério de R
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{python}{../python/exsim2.py}
 
+\newpage
 \subsection{Matlab}
 
-Para o desenho dos gráficos e simulações foi utilizado o \textit{octave} em conjunto do pacote \textit{control}. Segue o código referente para as simulações
+Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab}. Segue o código referente para as simulações
 
-%\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2.m}
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2.m}
 
 
 % ------------------------------------------------------------------------------
