@@ -9,8 +9,7 @@
 ###############################################################################
 
 OCTAVE = octave
-MATLAB_DIR = src/matlab
-MATLAB = matlab -nodesktop -nosplash -sd $(MATLAB_DIR) <
+MATLAB = matlab -nodesktop -nosplash
 
 # LaTeX Report ----------------------------------------------------------------
 TEX = pdflatex
@@ -93,4 +92,8 @@ clean-pdf: clean-tex
 .PHONY: exsim1
 exsim1: src/matlab/exsim1.m
 	${OCTAVE} $<
+
+.PHONY: exsim2
+exsim2: src/matlab/exsim2/exsim2.m
+	cd $(dir $<) && $(MATLAB) -sd $(dir $<) < $(notdir $<)
 
