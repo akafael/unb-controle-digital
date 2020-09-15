@@ -63,6 +63,7 @@ report: ${PDFOUTPUT}
 
 # Implicity Rule to Compile texfile
 src/tex/%.pdf: src/tex/%.tex src/tex/%.pytexcode
+	cd $(dir $<) && bibtex $(basename $(notdir $<))
 	cd $(dir $<) && $(TEX) $(TEXFLAGS) $(notdir $<)
 
 # Implicity Rule to Compile Python Code inside tex file

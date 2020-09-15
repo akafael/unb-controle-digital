@@ -5,7 +5,7 @@
 % ------------------------------------------------------------------------------
 \input{relat_layout.tex}
 
-\usepackage{circuitikz}
+%\usepackage{circuitikz}
 \usepackage[makestderr]{pythontex}
 
 \title{Laboratório 2} % Define o título do Relatório
@@ -38,7 +38,7 @@ Dado a função de transferência \ref{eq:ex2-tf}
 
 \subsection{Transformada z de G(s) com segurador de ordem zero em série}
 
-Aplicando a discretização temos:
+A discretização pode ser aproximada aplicando-se a transformada Z em conjunto de um segurador de ordem zero em série com o sistema. Desta forma temos $G_o(z) = Z(G_{zoh}(s)G(s)$ onde $G_{zoh}(s) = \frac{1-e^{-Ts}}{s}$. Aplicando as propriedades da transformada Z:
 
 $$
 \begin{array}{lcl}
@@ -49,7 +49,7 @@ $$
 \end{array}
 $$
 
-Fatorando o termo $\sympy{(1/s)*sGo}$ pelo método de frações parciais temos
+Para facilitar o cálculo, fatorando o termo $\sympy{(1/s)*sGo}$ pelo método de frações parciais:
 
 \begin{equation}\label{eq:ex2-partialfrac}
     \sympy{sGo/s} = \sympy{partialFraction(sGo/s,s)}
@@ -57,8 +57,8 @@ Fatorando o termo $\sympy{(1/s)*sGo}$ pelo método de frações parciais temos
 
 Pela tabela, temos que a transformada z de \ref{eq:ex2-partialfrac} é
 
-$$Z\{G(s)\} = \sympy{zGo}$$
-$$Z\{G(s)\} = \sympy{zGo.combsimp()}$$
+$$G_o(z) = Z(\frac{1-e^{-Ts}}{s}G(z)) = \sympy{zGo}$$
+$$G_o(z) = \sympy{zGo.combsimp()}$$
 
 Logo, substituindo $T = \sympy{nT}$, temos:
 
@@ -74,13 +74,23 @@ Logo, substituindo $T = \sympy{nT}$, temos:
 
 \subsection{Regra Retangular para frente}
 
+Uma outra forma de discretização é por meio de integração numérica. Neste caso basta subsituir $s = \sympy{Gzf}$:
+
 $$
-G_b(z) =  G(z)|_{s = \sympy{Gzb}} = \sympy{Gob}
+    G_f(z) =  G(z)|_{s = \sympy{Gzf}} = \sympy{Gof}
 $$
 
+$$
+    G_f(z) = \sympy{simplifyFraction(Gof,z)}
+$$
+
+Substituindo o período de amostragem $T=\sympy{nT}$:
+
 \begin{equation}
-    G_b(z) = \sympy{simplifyFraction(Gob,z)}
+    G_f(z) = \sympy{Gof.combsimp().subs(T,nT)}
 \end{equation}
+
+Neste método o número de polos e zeros é conservado após a discretização, no entanto tráz o problema de que polos estáveis dentro no plano s podem ser mapeados em polos instáveis no plano z a depender do período de amostragem $T$. Quanto menor o período de amostragem maior a chances de termos polos instáveis na realização do sistema discretizado desta forma. Para o período de amostragem $T=\sympy{nT}$  obtemos como resposta ao degrau:
 
 \begin{figure}[H]
     \centering
@@ -90,13 +100,23 @@ $$
 
 \subsection{Regra Retangular para trás}
 
+Outro método de integração numérica é a Regra Retangular para trás, em que substituimos $s = \sympy{Gzb}$:
+
 $$
-G_f(z) =  G(z)|_{s = \sympy{Gzf}} = \sympy{Gof}
+    G_b(z) =  G(z)|_{s = \sympy{Gzb}} = \sympy{Gob}
 $$
 
+$$
+    G_b(z) = \sympy{simplifyFraction(Gob,z)}
+$$
+
+Substituindo $T=\sympy{nT}$ temos
+
 \begin{equation}
-    G_f(z) = \sympy{simplifyFraction(Gof,z)}
+    G_b(z) = \sympy{Gob.combsimp().subs(T,nT)}
 \end{equation}
+
+Com isto é acrescentado um zero a mais na origem para cada polo da função, modificando o comportamento dinâmico do sistema. Do ponto de vista de estabilidade o problema é que polos instáveis no plano s podem vir a ser mapeados como estáveis em z. Desta forma somente a análise do sistema em no plano z pode não representar adequadamente o perfil de estabilidade no plano s do sistema.
 
 \begin{figure}[H]
     \centering
@@ -107,12 +127,20 @@ $$
 \subsection{Regra trapezoidal}
 
 $$
-G_d(z) =  G(z)|_{s = \sympy{Gzd}} = \sympy{God}
+    G_d(z) =  G(z)|_{s = \sympy{Gzd}} = \sympy{God}
 $$
 
-\begin{equation}
+$$
     G_d(z) = \sympy{simplifyFraction(God,z)}
+$$
+
+Em particular para $T=\sympy{nT}$ temos
+
+\begin{equation}
+    G_d(z) = \sympy{God.combsimp().subs(T,nT)}
 \end{equation}
+
+Neste caso, é acrescentado um zero a mais e 1 para cada polo existente. Dos métodos de discretização por integração avaliados foi o que mais aproximou o comportamento do sistema para uma mesma taxa de amostragem. Em termos de estabilidade, permite que o mapeamento completo do semi plano direito s dentro do circulo unitário no plano z. Desta forma 
 
 \begin{figure}[H]
     \centering
@@ -120,26 +148,31 @@ $$
     \caption{Resposta ao Degrau Unitário do Sistema discretizado pela regra trapezoidal}
 \end{figure}
 
+Um aspecto interessante percebido na simulação e resultado da forma de construção deste método de integração que que a função discretizada possui o mesmo valor do sistema continuo na metade do período de amostragem. isto é $G_d(kT+T/2) = G(kT+T/2$ para todo $k$.
+
 \subsection{Mapeamento exato de pólos e zeros}
 
 A função de transferência têm como polos $s_1=-2$ e $s_2=-3$. Mapeando no plano z temos $z = e^{sT}$
 
-\section{Projeto Sistema em Tempo Discreto}
+Este método possui as mesmas propriedades quanto a estabilidade que o método de integração pela Regra Trapezoidal, no entanto computacionalmente é mais caro de ser utilizado.
 
-\begin{equation}
-    G(s) = \frac{Y(s)}{U(s)} = \sympy{G2}
-\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-matched.png}
+    \caption{Resposta ao Degrau Unitário do Sistema discretizado pela regra trapezoidal}
+\end{figure}
 
-\begin{equation}
-    U(s) = \sympy{G1}U_C(s) - \sympy{H2}Y(s)
-\end{equation}
+Pela simulação temos o sistema discretizado possui exatamente o mesmo valor que o sistema contínuo em todos os instantes de $t$.
+
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{img/exsim2-plot-g-matched.png}
     \caption{Resposta ao Degrau Unitário do Sistema discretizado por mapeamento exato dos polos}
 \end{figure}
-'
+
+\section{Projeto Sistema em Tempo Discreto}
+
 \subsection{Sistema em Malha Fechada}
 
 Dado $G(s)$
@@ -172,6 +205,13 @@ Simplificando
 \end{equation}
 
 \subsection{Resposta em frequência}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim2-plot-bode2.png}
+    \caption{Diagrama de bode do sistema ($w_0=1$)}
+\end{figure}
+
 \subsection{Ação de Controle}
 
 Dado seguinte expressão da ação de controle:
@@ -191,11 +231,10 @@ Por fim temos
 
 \begin{figure}[H]
     \centering
-    \label{fig:ex2-simulink}
     \includegraphics[width=0.8\linewidth]{img/exsim2model.png}
     \caption{Diagrama de Blocos do Sistema no Simulink}
+    \label{fig:ex2-simulink}
 \end{figure}
-
 
 \subsubsection{Simulação}
 
@@ -203,13 +242,13 @@ Simulando o sistema da figura \ref{fig:ex2-simulink} para os períodos $T=0.2s$ 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-sim-t02.png}
+    \includegraphics[width=0.9\linewidth]{img/exsim2-plot-sim-t02.png}
     \caption{Resposta Simulação $T=0.2s$}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-sim-t05.png}
+    \includegraphics[width=0.9\linewidth]{img/exsim2-plot-sim-t05.png}
     \caption{Resposta Simulação $T=0.5s$}
 \end{figure}
 
@@ -217,7 +256,7 @@ No entanto para $t=1.08$ observamos que o sistema ficou instável.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{img/exsim2-plot-sim-t108.png}
+    \includegraphics[width=0.9\linewidth]{img/exsim2-plot-sim-t108.png}
     \caption{Resposta Simulação $T=1.08s$}
 \end{figure}
 
@@ -225,31 +264,38 @@ No entanto para $t=1.08$ observamos que o sistema ficou instável.
 
 % ------------------------------------------------------------------------------
 
-\bibliographystyle{abbrv}
-\bibliography{references}
 % Referências
+\addcontentsline{toc}{section}{Referências} % Adiciona linha no indice
+\bibliographystyle{abbrv} % Define Estilo e gera bibliografia
+\bibliography{references} % Adiciona Arquivo com Referências
+
 % Acrescentadas no arquivo references.bib
-% para usa-las no texto batsa usar \citep{}
+% para usa-las no texto basta usar \citep{}
+% para citar sem usar no texto basta usar \nocite{}
 \nocite{sympy}
+\nocite{pythontex}
+\nocite{matlabcontrol}
+\nocite{matlabsymbolic}
 
 % ------------------------------------------------------------------------------
 \newpage
-\section{Anexos}
-\subsection{Python}
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos} % Adiciona linha no indice
+\subsection*{Python}
 
-Para os calculos e demonstrações foi utilizado o seguinte código em python:
+Com exceção da transformada z, para os cálculos e demonstrações foi utilizado o pacote \textit{Python}\TeX\ \cite{pythontex} para o \LaTeX\ em conjunto da bibliteca \textit{sympy}\cite{sympy}. Segue o script completo em python:
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{python}{../python/exsim2.py}
 
 \newpage
-\subsection{Matlab}
+\subsection*{Matlab}
 
-\subsubsection{Parte 1}
-Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab}. Segue o código referente para as simulações
+\subsubsection*{Parte 1}
+Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab} em conjunto das toolbox \textit{Control System}\cite{matlabcontrol} e \textit{Symbolic Math}\cite{matlabsymbolic}. Segue o código referente usado
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2.m}
 
-\subsubsection{Parte 2}
+\subsubsection*{Parte 2}
 Na segunda parte foi utilizado uma versão modificada do script em \textit{Matlab} fornecido pelo professor:
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2script.m}
 

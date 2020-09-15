@@ -9,9 +9,13 @@
 *.out
 *.toc
 
-# Pythotex temporary files
+# Bibtex Temporary files
+*.bbl
+*.blg
+
+# Pythotex temporary files and folders
 *.pytxcode
-pythotex*
+pythontex-files*
 
 # Minted temporary files
 _minted*
