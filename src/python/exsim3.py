@@ -1,29 +1,28 @@
 """
-Laboratory Experiment 2 - Script
- - Discretization
+Laboratory Experiment 3 - Script
+ - Rootlocus project
  @author Rafael Lima
 """
 
-import sympy
-import numpy
+from sympy import *
 
 def simplifyFraction(G,s):
     """
     Expand numerator and denominator from given fraction
     """
-    num,den = sympy.fraction(G.expand().simplify())
-    num = sympy.Poly(num,s)
-    den = sympy.Poly(den,s)
+    num,den = fraction(G.expand().simplify())
+    num = Poly(num,s)
+    den = Poly(den,s)
     
     return (num/den)
 
 
-def partialFraction(G,s):
+def partfrac(G,s):
     """
     Split Fraction into several factors using residues theorem
     """
     # Find Poles
-    poles = sympy.solve(sympy.fraction(G.expand().simplify())[1],s)
+    poles = solve(sympy.fraction(G.expand().simplify())[1],s)
 
     # Find Resudues
     Gp = 0
@@ -32,14 +31,33 @@ def partialFraction(G,s):
 
     return Gp
 
-sympy.printing.printer.Printer().set_global_settings(precision=3)
+printing.printer.Printer().set_global_settings(precision=3)
 
 # Symbols
-s = sympy.symbols("s",complex=True)
-z = sympy.symbols("z",complex=True)
-K,a1,a0,T = sympy.symbols("K alpha_1 alpha_0 T",real=True)
+s = symbols("s",complex=True)
+z = symbols("z",complex=True)
+K,a1,a0,T = symbols("K alpha_1 alpha_0 T",real=True)
 
 # Constants
-na0 = 2
-na1 = 3
-nT = 0.1
+na0 = 1
+nT = 0.5
+
+# Open Loop Transfer Function
+sGo = 1/(s+na0)
+
+# Z Transform (From table) 
+sGz = (1-exp(-T))/(z-exp(-T))
+
+# Controler TF
+sGc = K*z/(z-1)
+sGma = simplify(expand(sGc*sGz))
+sGmf = simplify(expand(sGma/(1+sGma))) 
+
+# Characterist Equation
+_,poly = fraction(sGmf)
+
+# Find Critical Value for K
+sK = solve(poly,K)[0]
+Kmax = sK.subs([(T,nT),(z,-1)])
+
+poles2 = solve(poly.subs([(T,nT),(K,2)]),z)
