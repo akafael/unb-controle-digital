@@ -131,9 +131,9 @@ Simulando o sistema para diferentes os períodos de amostragem $T={0.5,1,2}$ for
 
 \begin{table}[H]
     $$
-    \begin{array}{cccc}
+    \begin{array}{ccccc}
         \hline
-        T [s] & Sobressinal & \zeta & T_s\ [s] \\
+        T [s] & Polos & Sobressinal & \zeta & T_s\ [s] \\
         \hline
         \input{aux/exsim3-g-table.tex}
         \\\hline
@@ -141,10 +141,22 @@ Simulando o sistema para diferentes os períodos de amostragem $T={0.5,1,2}$ for
     $$
 \end{table}
 
-
 \subsection{}
 
 \section{Projeto usando LGR em Tempo Discreto}
+
+Dado $G(s) = \frac{1}{s(s+a)}$. Discretizando no \textit{matlab} temos que
+
+
+$$G(z) = G_{zoh}(z)\mathcal{Z}\left\{G(s)\right\}$$
+$$G(z) = (1-z^{-1})\mathcal{Z}\left\{\frac{1}{4\,\left(s+2\right)}-\frac{1}{4\,s}+\frac{1}{2\,s^2}\right\} $$
+$$G(z) = (1-z^{-1})\mathcal{Z}\left\{\frac{1}{4\,\left(s+2\right)}-\frac{1}{4\,s}+\frac{1}{2\,s^2}\right\} $$
+$$G(z) = \sympy{sGz2}$$
+$$G(z) = \sympy{simplifyFraction(sGz2,z)}$$
+
+Em particular para $T=0.2$ avaliando a expressão no matlab temos:
+
+$$\input{aux/exsim3-eq-g2-tf.tex}$$
 
 \subsection{Avaliação dos Requisitos}
 
@@ -163,6 +175,28 @@ o os polos podem ser obtidos por $ \rho = -\zeta\omega_n \pm j\omega_n\sqrt{1-\z
 
 Desta forma temos que o módulo será $|z_{\rho}| =  e^{-\zeta\omega_n T} = e^{-\frac{4T}{t_s}}$ e o fase de $z_\rho$ será $arg(z_{\rho}) = \omega_n\sqrt{1-\zeta^2} = \frac{4}{t_s\zeta}\sqrt{1-\zeta^2}$. Com isto, para garantir que este requisitos seja cumpridos basta verificar se o LGR no plano $z$ passa pelo ponto $z = z_{\rho}$.
 
+Resolvedo a expressão teremos os seguintes polos desejados no plano $s$
+
+$$
+\left\{
+\begin{array}{l}
+    s_0 = \sympy{round(desiredPoles[0],4)}\\
+    s_1 = \sympy{round(desiredPoles[1],4)}
+\end{array}
+\right.
+$$
+
+Transformando para o polo $z$ temos
+
+$$
+\left\{
+\begin{array}{l}
+    z_0 = e^{-s_0 T} = \sympy{round(desiredPolesZ[0],4)}\\
+    z_1 = e^{-s_1 T} = \sympy{round(desiredPolesZ[1],4)}
+\end{array}
+\right.
+$$
+
 \subsection{Resposta sistema em malha fechada}
 
 % Calcular função de transferẽncia
@@ -176,7 +210,60 @@ Inicialmente, para uma primeira estimativa do comportamento do sistema podemos o
     \label{fig:ex3-rlocus-g2}
 \end{figure}
 
-A partir do gráfico \ref{fig:ex3-rlocus-g2} temos que o LGR da planta sem o controlador já intercepta a curva dada por $\zeta = 0.5$, no entanto é necessário verificar se o tempo de acomodação já cumpre os requisitos.
+A partir do gráfico \ref{fig:ex3-rlocus-g2} temos que o LGR da planta sem o controlador já intercepta a curva dada por $\zeta = 0.5$, no entanto não passa pelos polos desejados marcados em $*$. Uma forma simples de deslocar o gráfico do LGR lateralmente. Para tal um controlador possível é
+
+\begin{equation}
+    Gc(z) = K\frac{(z-e^{-aT})}{z-\beta} = \sympy{sGc2}
+\end{equation}
+
+\begin{equation}
+    Gc(z)Gz(z) = \sympy{sGma2}
+\end{equation}
+
+\begin{equation}
+    G_{mf}(z) = \sympy{sGmf2}
+\end{equation}
+
+Em que o polinômio característico é dado por
+
+\begin{equation}
+    \phi(z) = \sympy{collect(poly2,K)}
+\end{equation}
+
+Como os polos desejado são raizes da polinômio característico, podemos obter $K$ e $\sympy{b}$ a partir do seguinte sistema:
+
+$$
+\left\{
+\begin{array}{l}
+    \phi(z_0) = \sympy{roundExpr(sysKb[0],4)} = 0\\
+    \phi(z_1) = \sympy{roundExpr(sysKb[1],4)} = 0
+\end{array}
+\right.
+$$
+
+Resolvendo o sistema temos $K = \npy{nK}$ e $\sympy{b} = \npy{nb}$. De modo que função de malha fechada fica
+
+\begin{equation}
+    G_{mf}(z) = \sympy{roundExpr(nGmf2,4)}
+\end{equation}
+
+Com o controlador proposto passamos a ter o seguinte LGR:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim3-rlocus-g2-control.png}
+    \caption{LGR sem o controlador}
+    \label{fig:ex3-rlocus-g2-control}
+\end{figure}
+
+A resposta ao degrau unitário passa a ser a seguinte:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim3-step-g2-control.png}
+    \caption{Resposta ao Degrau}
+    \label{fig:ex3-step-g2-control}
+\end{figure}
 
 %%\section{Conclusão}
 
