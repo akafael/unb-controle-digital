@@ -91,6 +91,7 @@ Avaliando a função para diferentes períodos de amostragem obtemos os seguinte
 Pelas figuras nota-se que o gráfico do LGR cruza o circulo de raio unitário definido em tracejado apenas no ponto $z=-1$ de modo que, em particular para este sistema podemos encontrar o valor do ganho crítico subsituindo $z=-1$ na equação \ref{eq:ex3-k-poly}. Em particular para $T=\{0.5,1,2\}$ temos os seguintes valores críticos para $K$:
 
 \begin{table}[H]
+    \centering
     $$
     \begin{array}{cl}
         \hline
@@ -111,22 +112,35 @@ Simulando o sistema para diferentes os períodos de amostragem $T={0.5,1,2}$ for
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{img/exsim3-step-t500ms.png}
-    \caption{ $T=0.5s$}
+    \caption{ Resposta ao Degrau ($T=0.5s$)}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{img/exsim3-step-t1000ms.png}
-    \caption{ $T=1s$}
+    \caption{ Resposta ao Degrau ($T=1s$)}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{img/exsim3-step-t2000ms.png}
-    \caption{ $T=2s$}
+    \caption{ Resposta ao Degrau ($T=2s$)}
 \end{figure}
 
 %% TODO Gerar tabela com Sobresinal e Tempo de Acomodação
+
+\begin{table}[H]
+    $$
+    \begin{array}{cccc}
+        \hline
+        T [s] & Sobressinal & \zeta & T_s\ [s] \\
+        \hline
+        \input{aux/exsim3-g-table.tex}
+        \\\hline
+    \end{array}
+    $$
+\end{table}
+
 
 \subsection{}
 
@@ -150,6 +164,8 @@ o os polos podem ser obtidos por $ \rho = -\zeta\omega_n \pm j\omega_n\sqrt{1-\z
 Desta forma temos que o módulo será $|z_{\rho}| =  e^{-\zeta\omega_n T} = e^{-\frac{4T}{t_s}}$ e o fase de $z_\rho$ será $arg(z_{\rho}) = \omega_n\sqrt{1-\zeta^2} = \frac{4}{t_s\zeta}\sqrt{1-\zeta^2}$. Com isto, para garantir que este requisitos seja cumpridos basta verificar se o LGR no plano $z$ passa pelo ponto $z = z_{\rho}$.
 
 \subsection{Resposta sistema em malha fechada}
+
+% Calcular função de transferẽncia
 
 Inicialmente, para uma primeira estimativa do comportamento do sistema podemos obter o gráfico do lugar das raizes para o sistema em malha fechada sem o controlador. O que seria equivalente a um controlador dado apenas por um ganho ajustável.
 

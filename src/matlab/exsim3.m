@@ -7,6 +7,7 @@ close all
 % Get path from current file and generate absolute path
 file_path = fileparts(mfilename('fullpath'))
 img_path = strcat(file_path,"/../tex/img/")
+tex_path = strcat(file_path,"/../tex/aux/")
 
 % Define Symbols
 syms s z T w K
@@ -36,7 +37,8 @@ sGmf = simplify(expand(sGma/(1+sGma)))
 [~,poly] = numden(sGmf)
 eval(subs(solve(poly,K),[z T],[-1 2]))
 
-
+% Create File for table
+fileTable = fopen(strcat(tex_path,"exsim3-g-table.tex"),"w")
 
 for Ts = [0.5 1 2]
     [num,den] = numden(subs(sGc,T,Ts))
@@ -46,6 +48,7 @@ for Ts = [0.5 1 2]
     % Root Locus
     fig = figure()
     rlocus(Gz)
+    xlim([-1.5 1])
     title(strcat("Root Locus (T=",num2str(Ts),")"))
     print(fig, strcat(img_path,"exsim3-rlocus-t",num2str(Ts*1000),"ms.png"),"-dpng")
     
@@ -68,7 +71,16 @@ for Ts = [0.5 1 2]
 
     % Step Response
     sysinfo = stepinfo(Gcc)
+
+    % Calculate Damping
+    damping = log(sysinfo.Overshoot)/sqrt(pi^2+(log(sysinfo.Overshoot)^2))
+
+    % Print System Response to tex table
+    fprintf(fileTable,"%.1f & %.3f & %.3f & %.3f\\\\\n",Ts, sysinfo.Overshoot, damping , sysinfo.SettlingTime);
 end
+
+fprintf(fileTable,"\n")
+fclose(fileTable);
 
 %% Part 2
 
@@ -92,6 +104,7 @@ Gz2 = c2d(G2,Ts,'zoh')
 sGc = (z-0.6703)/(z-0.1)
 [num,den] = numden(subs(sGc,T,Ts))
 Gc = tf(sym2poly(num),sym2poly(den),Ts)
+Gmf2 = feedback(Gc*Gz2,1)
 
 % Root Locus
 fig = figure()
@@ -100,3 +113,18 @@ zgrid()
 xlim([-3 1.5])
 print(fig, strcat(img_path,"exsim3-rlocus-g2.png"),"-dpng")
 
+% Root Locus Controler
+fig = figure()
+rlocus(Gz2*Gc)
+zgrid()
+xlim([-3 1.5])
+print(fig, strcat(img_path,"exsim3-rlocus-g2-control.png"),"-dpng")
+
+% Step Response
+fig = figure()
+step(Gmf2)
+sysinfo2 = stepinfo(Gmf2)
+qsi = log(sysinfo2.Overshoot)/sqrt(pi^2+(log(sysinfo2.Overshoot)^2))
+print(fig, strcat(img_path,"exsim3-step-g2-control.png"),"-dpng")
+
+close all
