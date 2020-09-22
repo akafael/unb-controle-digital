@@ -5,12 +5,12 @@ clear
 close all
 
 % Get path from current file and generate absolute path
-file_path = fileparts(mfilename('fullpath'))
-img_path = strcat(file_path,"/../tex/img/")
-tex_path = strcat(file_path,"/../tex/aux/")
+file_path = fileparts(mfilename('fullpath'));
+img_path = strcat(file_path,"/../tex/img/");
+tex_path = strcat(file_path,"/../tex/aux/");
 
 % Define Symbols
-syms s z T w K
+syms s z T w K;
 
 %% Part 1
 
@@ -84,7 +84,7 @@ for Ts = [0.5 1 2]
             sysinfo.Overshoot/100, damping , sysinfo.SettlingTime);
 end
 
-fprintf(fileTable,"\n")
+fprintf(fileTable,"\n");
 fclose(fileTable);
 
 %% Part 2
@@ -106,31 +106,38 @@ partfrac((1/s)*sG2)  % Calculate partial fraction
 Gz2 = c2d(G2,Ts,'zoh')
 sGz2 = poly2sym(Gz2.num{1},z)/poly2sym(Gz2.den{1},z);
 
-fileEq = fopen(strcat(tex_path,"exsim3-eq-g2-tf.tex"),"w")
-fprintf(fileEq,"G(z),%s\n",latex(sGz2))
-fclose(fileEq)
+fileEq = fopen(strcat(tex_path,"exsim3-eq-g2-tf.tex"),"w");
+fprintf(fileEq,"G(z),%s\n",latex(sGz2));
+fclose(fileEq);
 
 % Request Conditions
 desiredDamping = 0.5
 desiredSettlingTime = 2
 desiredOvershoot = exp(-desiredDamping*pi/sqrt(1-desiredDamping^2))
-desiredPoles = (4/desiredSettlingTime)*(1 + i*[1 -1]*sqrt(1-desiredDamping^2)/desiredDamping)
-desiredPolesZ = exp(-desiredPoles*Ts)
+desiredPoles = -(4/desiredSettlingTime)*(1 + i*[1 -1]*sqrt(1-desiredDamping^2)/desiredDamping)
+desiredPolesZ = exp(desiredPoles*Ts)
 
 % Controler
-%sGc = (z-exp(-2*Ts))/(z-0.25)
-sGc = (z-exp(-2*Ts))/(z-0.776)
-[num,den] = numden(subs(sGc,T,Ts))
-Gc = tf(sym2poly(num),sym2poly(den),Ts)
-
-sGma2 = simplify(expand(K*sGc*sGz2))
+sGc = (z-exp(-2*Ts))/(z-0.25)
+syms b
+sGc2 = K*(z-exp(-2*Ts))/(z-b)
+sGma2 = simplify(expand(sGc2*sGz2))
 sGmf2 = simplify(expand(sGma2/(1+sGma2)))
 
-% Find Max K for stable function
+% Find K and b for the controler
 [~,poly2] = numden(sGmf2)
-Kd = abs(eval(subs(solve(poly2,K),z,desiredPolesZ(1))))
+eqKb1 = subs(poly2,z,desiredPolesZ(1));
+eqKb2 = subs(poly2,z,desiredPolesZ(2));
+[A,B] = equationsToMatrix([eqKb1,eqKb2],[K,b]);
+solutionKb = linsolve(A,B);
+Kd = eval(solutionKb(1));
+nb = eval(solutionKb(2));
 
-Gmf2 = feedback(Gc*Gz2,Kd)
+% Generate TF with calculeted K and b
+nGmf2 = subs(sGc2,[T K b],[Ts Kd nb])
+[num,den] = numden(nGmf2)
+Gc = tf(sym2poly(num),sym2poly(den),Ts)
+Gmf2 = zpk(feedback(Gc*Gz2,1))
 
 % Root Locus
 fig = figure()
@@ -166,3 +173,20 @@ legend("G","")
 hold off;
 print(fig, strcat(img_path,"exsim3-step-g2-control.png"),"-dpng")
 
+%% Symulink Evaluation
+
+% Run Model 1 simulation
+model1FileName = 'exsim3modelPart1';
+sim(model1FileName)
+
+% Export Model as PNG
+pictureFileName = strcat(img_path,model1FileName,'.png');  % Generate name from model name
+print(['-s',model1FileName],'-dpng',pictureFileName);      % Generate PDF
+
+% Run Model 2 simulation
+model2FileName = 'exsim3modelPart2';
+sim(model2FileName)
+
+% Export Model as PNG
+pictureFileName = strcat(img_path,model2FileName,'.png');  % Generate name from model name
+print(['-s',model2FileName],'-dpng',pictureFileName);      % Generate PDF

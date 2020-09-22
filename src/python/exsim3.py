@@ -78,13 +78,22 @@ Ts = 0.2
 # Open Loop Transfer Function
 sGo2 = 1/(s+2)
 
-# Z Transform (From table) 
+# TODO find Z Transform (From table)
+# BUG: not matching ZOH discretization from matlab
 sGz2 = (z-1)*(1/(4*(z-exp(-2*T))) - 1/(4*(z-1)) + T*(1/((z-1)*(z-1))))
 
 # Controler TF
 sGc2 = K*(z-exp(-na1*T))/(z-b)
 sGma2 = simplifyFraction(sGc2*sGz2,z)
 sGmf2 = simplify(expand(sGma2/(1+sGma2))) 
+
+# Expression from matlab
+mGz2 = ((2533546664982251*z)/144115188075855872 + 554410548014771/36028797018963968)/(z**2 - (3761226368457787*z)/2251799813685248 + 6037706219090157/9007199254740992)
+
+# Controler TF from Matlab
+mGc2 = K*(z-exp(-na1*T))/(z-b)
+mGma2 = simplifyFraction(mGc2*mGz2,z)
+mGmf2 = simplify(expand(mGma2/(1+mGma2))) 
 
 # Characterist Equation
 _,poly2 = fraction(sGmf2)
