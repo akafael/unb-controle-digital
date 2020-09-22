@@ -61,17 +61,12 @@ for Ts = [0.5 1 2]
     poles2  = rlocus(Gz,2)
 
     % Transfer Function at K = 2
-    [num,den] = numden(subs(sGmf,[K T],[2 Ts]))
+    Kc = 2
+    [num,den] = numden(subs(sGmf,[K T],[Kc Ts]))
     Gk2 = tf(sym2poly(num),sym2poly(den),Ts)
 
-    % TODO Step Response with K = 2
-    Gcc = feedback(Gz,Ts)
-    fig = figure()    
-    step(Gcc)
-    title(strcat("Step Response (T=",num2str(Ts),"s)"))
-    print(fig, strcat(img_path,"exsim3-step-t",num2str(Ts*1000),"ms.png"),"-dpng")
-
     % Step Response
+    Gcc = feedback(Gz,Ts)
     sysinfo = stepinfo(Gcc)
 
     % Calculate Damping
@@ -82,6 +77,24 @@ for Ts = [0.5 1 2]
             Ts,...
             num2str(poles2(1)), num2str(poles2(2)),...
             sysinfo.Overshoot/100, damping , sysinfo.SettlingTime);
+
+    % Run Model 1 simulation
+    sim('exsim3modelPart1') % export simramp and sim step
+
+    % Step Response with K = 2
+    fig = figure()    
+    step(Gcc)
+    plot(simstep) 
+    title(strcat("Step Response (T=",num2str(Ts),"s)"))
+    legend("input","output")
+    print(fig, strcat(img_path,"exsim3-step-t",num2str(Ts*1000),"ms.png"),"-dpng")
+
+    % Ramp Response with K = 2
+    fig = figure()    
+    plot(simramp) 
+    title(strcat("Ramp Response (T=",num2str(Ts),"s)"))
+    legend("input","output")
+    print(fig, strcat(img_path,"exsim3-ramp-t",num2str(Ts*1000),"ms.png"),"-dpng")
 end
 
 fprintf(fileTable,"\n");
@@ -173,6 +186,17 @@ legend("G","")
 hold off;
 print(fig, strcat(img_path,"exsim3-step-g2-control.png"),"-dpng")
 
+% Ramp Response
+fig = figure()
+hold on;
+lsim(Gmf2,0:Ts/2:sysinfo2.SettlingTime*1.5)
+xline(desiredSettlingTime,':')
+legend("G","")
+title("Ramp")
+hold off;
+print(fig, strcat(img_path,"exsim3-ramp-g2-control.png"),"-dpng")
+
+
 %% Part 2 - Project 2
 gamma = 0.01
 Kcss = 3
@@ -180,19 +204,38 @@ Gcss = tf([1 gamma],[1 gamma*Kcss],Ts)
 
 Gmf3 = zpk(feedback(Gcss*Gc*Gz2,1))
 
+% Step Response
 fig = figure()
+hold on;
+step(Gmf2)
 step(Gmf3)
+%yline(desiredOvershoot+sysinfo2.SettlingMax,':')
+xline(desiredSettlingTime,':')
+legend("Gc","Gc*Gc2")
+hold off;
+print(fig, strcat(img_path,"exsim3-step-g3-control.png"),"-dpng")
 
+% Ramp Response
+fig = figure()
+hold on;
+lsim(Gmf2,0:Ts/2:sysinfo2.SettlingTime*1.5)
+lsim(Gmf3,0:Ts/2:sysinfo2.SettlingTime*1.5)
+xline(desiredSettlingTime,':')
+legend("Gc","Gc*Gc2")
+title("Ramp")
+hold off;
+print(fig, strcat(img_path,"exsim3-ramp-g3-control.png"),"-dpng")
 
 %% Symulink Evaluation
 
+
 % Run Model 1 simulation
-model1FileName = 'exsim3modelPart1';
-sim(model1FileName)
+modelFileName = 'exsim3modelPart1';
+sim(modelFileName)
 
 % Export Model as PNG
-pictureFileName = strcat(img_path,model1FileName,'.png');  % Generate name from model name
-print(['-s',model1FileName],'-dpng',pictureFileName);      % Generate PDF
+pictureFileName = strcat(img_path,modelFileName,'.png');  % Generate name from model name
+print(['-s',modelFileName],'-dpng',pictureFileName);      % Generate PDF
 
 % Run Model 2 simulation
 model2FileName = 'exsim3modelPart2';
@@ -200,4 +243,12 @@ sim(model2FileName)
 
 % Export Model as PNG
 pictureFileName = strcat(img_path,model2FileName,'.png');  % Generate name from model name
+print(['-s',model2FileName],'-dpng',pictureFileName);      % Generate PDF
+
+% Run Model 2 simulation
+model2FileName = 'exsim3modelPart2d';
+sim(model2FileName)
+
+% Export Model as PNG
+pictureFileName = strcat(img_path,model2FileName,'.png'); % Generate name from model name
 print(['-s',model2FileName],'-dpng',pictureFileName);      % Generate PDF

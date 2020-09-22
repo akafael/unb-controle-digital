@@ -149,7 +149,27 @@ Simulando o sistema para diferentes os períodos de amostragem $T={0.5,1,2}$ for
     $$
 \end{table}
 
-\subsection{}
+\subsection{Resposta a Ramp Unitário}
+
+Simulando o sistema para diferentes os períodos de amostragem $T={0.5,1,2}$ foram obtidos respectivavamente as seguintes respostas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3-ramp-t500ms.png}
+    \caption{ Resposta ao Degrau ($T=0.5s$)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3-ramp-t1000ms.png}
+    \caption{ Resposta ao Degrau ($T=1s$)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3-ramp-t2000ms.png}
+    \caption{ Resposta ao Degrau ($T=2s$)}
+\end{figure}
 
 \section{Projeto usando LGR em Tempo Discreto}
 
@@ -267,8 +287,8 @@ Com o controlador proposto passamos a ter o seguinte LGR:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim3-rlocus-g2-control.png}
-    \caption{LGR sem o controlador}
+    \includegraphics[width=0.8\linewidth]{img/exsim3-rlocus-g2-control.png}
+    \caption{LGR com o controlador}
     \label{fig:ex3-rlocus-g2-control}
 \end{figure}
 
@@ -276,27 +296,60 @@ A resposta ao degrau unitário passa a ser a seguinte:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim3-step-g2-control.png}
+    \includegraphics[width=0.8\linewidth]{img/exsim3-step-g2-control.png}
     \caption{Resposta ao Degrau}
     \label{fig:ex3-step-g2-control}
 \end{figure}
 
+A resposta a rampa unitária passa a ser a seguinte:
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3-ramp-g2-control.png}
+    \caption{Resposta a Rampa unitária}
+    \label{fig:ex3-step-g2-control}
+\end{figure}
 
 \subsection{Projeto Controlador}
 
-Embora o controlador proposto definido em () garanta os requisitos da resposta transiente do sistema, podemos notar pela figura \ref{fig:ex3-step-g2-control} que erro em regime permanente para a resposta ao degrau não é nulo. Desta forma é necessário uma modificação para garantir as que tanto os requisitos em regime permanente como em regime estácionário sejam cumpridos. Uma possível solução é acrescentar um atraso com ganho unitário e polos não dominantes no sistema, isto é próximos de $z=0$ desta forma o erro estacionário pode ser corrigido sem alterar muito a dinâmica do sistema, permitindo reaproveitar o controlador desenvolvido. Para tal é proposto um controlador na seguinte forma:
+Embora o controlador proposto definido garanta os requisitos da resposta transiente do sistema, podemos notar pela figura \ref{fig:ex3-step-g2-control} que erro em regime permanente para a resposta ao degrau não é nulo. Desta forma é necessário uma modificação para garantir as que tanto os requisitos em regime permanente como em regime estácionário sejam cumpridos. Uma possível solução é acrescentar um atraso com ganho unitário e polos não dominantes no sistema, isto é próximos de $z=0$ desta forma o erro estacionário pode ser corrigido sem alterar muito a dinâmica do sistema, permitindo reaproveitar o controlador desenvolvido. Para tal é proposto um controlador na seguinte forma:
 
 \begin{equation}
-    G_{c2}(z) = \frac{z - \gamma}{z-\gamma*K_c}\ ,\ \gamma << 1
+    G_{c2}(z) = \frac{z - \gamma K_c}{z-\gamma}\ ,\ \gamma << 1
 \end{equation}
 
-Para garantir uma redução em um terço podemos escolher $K_c = 1/(1/3) = 3$
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3modelPart2d.png}
+    \caption{Diagrama de bloco sistema em Malha fechada com controlador com correção de erro estacionário}
+\end{figure}
 
-%%\section{Conclusão}
+Para garantir uma redução em um terço podemos escolher $K_c = 1/(1/3) = 3$ e $\gamma = 0.01$. A resposta ao degrau unitário passa a ser a seguinte:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3-step-g3-control.png}
+    \caption{Resposta ao Degrau}
+    \label{fig:ex3-step-g2-control}
+\end{figure}
+
+A resposta a rampa unitária passa a ser a seguinte:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/exsim3-ramp-g3-control.png}
+    \caption{Resposta a Rampa unitária}
+    \label{fig:ex3-step-g2-control}
+\end{figure}
+
+No que o erro para rampa diminuiu mas a resposta ao transiente foi comprometida.
+
+\section{Conclusão}
+
+Foi possível simular todos os controladores e com auxílio da biblioteca simbólica obter a resposta exata para os polos desejado para o sistema em malha fechada. A simulação a partir do simulink e a resposta a partir das funções $lsim$ e $step$ foram diferentes. Enquanto para o simulink a saída foi representada como um sinal constante, com as funções o sinal de saída também era amostrado.
 
 % ------------------------------------------------------------------------------
-
+\newpage
 % Referências
 \addcontentsline{toc}{section}{Referências} % Adiciona linha no indice
 \bibliographystyle{abbrv} % Define Estilo e gera bibliografia
