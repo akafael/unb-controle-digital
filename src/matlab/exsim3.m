@@ -173,6 +173,17 @@ legend("G","")
 hold off;
 print(fig, strcat(img_path,"exsim3-step-g2-control.png"),"-dpng")
 
+%% Part 2 - Project 2
+gamma = 0.01
+Kcss = 3
+Gcss = tf([1 gamma],[1 gamma*Kcss],Ts)
+
+Gmf3 = zpk(feedback(Gcss*Gc*Gz2,1))
+
+fig = figure()
+step(Gmf3)
+
+
 %% Symulink Evaluation
 
 % Run Model 1 simulation
