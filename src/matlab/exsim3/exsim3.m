@@ -6,8 +6,8 @@ close all
 
 % Get path from current file and generate absolute path
 file_path = fileparts(mfilename('fullpath'));
-img_path = strcat(file_path,"/../tex/img/");
-tex_path = strcat(file_path,"/../tex/aux/");
+img_path = strcat(file_path,"/../../tex/img/");
+tex_path = strcat(file_path,"/../../tex/aux/");
 
 % Define Symbols
 syms s z T w K;
