@@ -6,7 +6,7 @@ clear
 close all
 
 % Get path from current file and generate absolute path
-file_path = fileparts(mfilename('fu?llpath'))
+file_path = fileparts(mfilename('fullpath'))
 img_path = strcat(file_path,"/../../tex/img/")
 
 %% QUESTION 1a
@@ -71,24 +71,65 @@ Gcf = tf(num,den,Ts)
 
 %%
 % ZOH Method
-Gcz = c2d(G,Ts,'zoh')
+Gcz = c2d(Gc,Ts,'zoh')
 
 %%
 % Mached Poles Method
-Gcm = c2d(G,Ts,'matched')
+Gcm = c2d(Gc,Ts,'matched')
 
 %% QUESTION 1c
 
 %%
 % Find Desired Poles
-MP = 0.1633333333333333333333333333333333
+MP = 0.163333
 tc = 2
 
-qsi = -log(MP)/sqrt(pi^2 + (log(MP))^2)
-qsi = 0.5
+qsi = -log(MP)/sqrt(pi^2 + (log(MP))^2) % From MP
+qsi = 0.5 % From TF
 w0 = tc/qsi
 
 DesiredPoles = roots([1 2*tc w0^2])
-DesiredPolesZ = exp(-DesiredPoles*Ts)
+DesiredPolesZ = exp(DesiredPoles*Ts)
 
+
+%% QUESTION 1d
+
+%%
+%
+zpk(feedback(Gcm*Gz,1))
+
+polesFm = rlocus(Gcm*Gz,1)
+
+rlocus(Gcm*Gz);
+hold on;
+plot(DesiredPolesZ,'*')
+ylim(3*[-1 1]);
+xlim(3*[-1 1]);
+hold off;
+
+%%
+%
+zpk(feedback(Gcf*Gz,1))
+
+polesFf = rlocus(Gcf*Gz,1)
+
+rlocus(Gcf*Gz);
+hold on;
+plot(DesiredPolesZ,'*')
+ylim(3*[-1 1]);
+xlim(3*[-1 1]);
+hold off;
+
+%%
+%
+zpk(feedback(Gcz*Gz,1))
+
+polesFz = rlocus(Gcz*Gz,1)
+
+rlocus(Gcz*Gz);
+hold on;
+plot(DesiredPolesZ,'*')
+ylim(3*[-1 1]);
+xlim(3*[-1 1]);
+hold off;
 
