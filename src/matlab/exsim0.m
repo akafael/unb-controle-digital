@@ -15,7 +15,7 @@ img_path = strcat(file_path,"/../../tex/img/")
 syms s z T
 
 % Coeficients 
-q1Ts = 0.1
+q1Ts = 0.02
 q1K0 = 5
 q1K1 = 3.2
 q1a0 = 1
@@ -67,15 +67,15 @@ q1sGcf = expand(simplify(q1sGcf))
 [num,den] = numden(subs(q1sGcf,T,q1Ts))
 num = sym2poly(num)
 den = sym2poly(den)
-q1Gcf = tf(num,den,q1Ts)
+q1Gcf = zpk(tf(num,den,q1Ts))
 
 %%
 % ZOH Method
-q1Gcz = c2d(q1Gc,q1Ts,'zoh')
+q1Gcz = zpk(c2d(q1Gc,q1Ts,'zoh'))
 
 %%
 % Mached Poles Method
-q1Gcm = c2d(q1Gc,q1Ts,'matched')
+q1Gcm = zpk(c2d(q1Gc,q1Ts,'matched'))
 
 %% QUESTION 1c
 
@@ -160,30 +160,37 @@ q2K2 = 2
 q2sG1 = a/(s+a)
 q2sG2 = q2K2/(s+b)
 q2sGc = Kc
-q2sQ = D
+q2sQ = D/s
 q2sGho = 1/s
 
 q2sGma0 = (q2sGc*q2sG1*q2sGho+q2sQ)*q2sG2
 q2sGma1 = subs(q2sGma0,[a b],[q2na q2nb])
 
+q2sG = collect(simplify(expand((subs((q2sQ+q2sG1)*q2sG2,[a b],[q2na q2nb])))),s)
+
 %%
 %
-pretty(vpa(partfrac(q2sGma1),4))
+pretty((4/9)*partfrac((9/4)*q2sG/s))
 
 %%
 % From Table
-q2sGmaz = (1-z^(-1))*(((4*Kc)/3)*(z/(z-1)) - ((100*Kc)/(9*5))*(z/(z-exp(-(3/5)*T))) + ((4*D + (16*Kc)/9)/2)*(z/(z-exp(-(3/2)*T))))
+q2sGz = (3*D)*(T*z/((z-1)^2)) - (2*D - 3)*(z/(z-1)) - 5*(z/(z-exp(-(3/5)*T))) + (2*D + 2)*(z/(z-exp(-(3/2)*T)))
+q2sGmaz = (1-z^(-1))*(4/9)*q2sGz
 
 pretty(q2sGmaz)
 
-pretty(simplifyFraction(q2sGmaz))
+q2sGmfz = collect(simplifyFraction((q2sGc*q2sGmaz)/(1+q2sGc*q2sGmaz)),[Kc z D])
+
+q2nGmaz = vpa(subs(collect(simplifyFraction(q2sGmaz),z),T,q2Ts),4)
+
+q2nGmfz = vpa(collect(subs(q2sGmfz,T,q2Ts),z),4)
 
 %% QUESTION 2c
 
 %%
 % SteadState Error
 q2exprLimErrorStep = collect(subs(q2sGmaz,[T D],[q2Ts 0]),z)
-q2exprErrorStep = subs(q2exprLimErrorStep,z,0)
+q2exprErrorStep = subs(q2nGmaz,[D z],[0 0])
 
 q2DesiredErrorStep = 0.1
 q2nKc = eval(solve(q2exprErrorStep - q2DesiredErrorStep,Kc))
@@ -200,8 +207,11 @@ q3G = tf(1,[1 0 0])
 
 sGz = (T^2)*((z+1)/(2*(z-1)^2))
 
-sGmf = 1/((1+Td - z^(-1))/Kc + 1/(Kc*sGz))
-sGmf = collect(simplify(expand(sGmf)),z)
+sIGmf = collect(simplifyFraction(((1+Td)*z -1)/z + (1/Kc)*(1/sGz)),z)
+
+q3Gmf = collect(subs(1/sIGmf,T,1),Kc)
+
+
 
 %% QUESTION 3b
 q3MP = 0.2
@@ -212,3 +222,21 @@ q3tc = q3qsi*q3w0
 
 q3DesiredPoles = roots([1 2*q3tc q3w0^2])
 q3DesiredPolesZ = exp(q3DesiredPoles*q3Ts)
+
+
+%%
+
+[num,den] = numden(q3Gmf)
+eqSis1 = subs(den,[T z (Kc*Td)],[1 q3DesiredPolesZ(1) a])
+eqSis2 = subs(den,[T z (Kc*Td)],[1 q3DesiredPolesZ(2) a])
+[A,B] = equationsToMatrix([eqSis1 eqSis2],[Kc,a]);
+solutionKb = linsolve(A,B);
+
+q3Kc = eval(solutionKb(1))
+q3Td = eval(solutionKb(2))/q3Kc
+
+%% 
+%
+q3poly = vpa(subs(den,[Kc Td],[q3Kc q3Td]),4)
+poles = solve(vpa(subs(den,[Kc Td],[q3Kc q3Td]),4),z)
+

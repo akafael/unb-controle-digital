@@ -1,0 +1,137 @@
+% Pacotes e configurações padrão do estilo ``article''\
+% -------------------------------------
+\documentclass[a4paper,11pt]{article}
+% Layout
+% ------------------------------------------------------------------------------
+\input{relat_layout.tex}
+
+%\usepackage{circuitikz}
+\usepackage[makestderr]{pythontex}
+
+\title{Laboratório 4} % Define o título do Relatório
+\author{Rafael Lima}
+
+% Definições Auxiliares ( Macros próprias )
+% ------------------------------------------------------------------------------
+%\input{relat_aux.tex} % Arquivo com minhas macros
+\newcommand{\npy}[1]{\sympy{round(#1,4)}}
+% ----------------------------------~>ø<~---------------------------------------
+\begin{document}
+% Capa e Índice ----------------------------------------------------------------
+\input{relat_capa.tex} % Capa para UnB
+% Conteúdo ---------------------------------------------------------------------
+
+\section{Projeto de Controlador na Frequência}
+
+% Código fonte colocado a parte para facilitar validação dentro do ipython
+\begin{sympycode}
+# Get Source Code
+sys.path.insert(1, '../../')
+from src.python.exsim4 import *
+\end{sympycode}
+
+\subsection{Transformada z de G(s) com segurador de ordem zero em série}
+
+A discretização pode ser aproximada aplicando-se a transformada z em conjunto de um segurador de ordem zero em série com o sistema. desta forma temos $G_{ho}(z) = Z(G_{zoh}(s)G(s)$ onde $G_{zoh}(s) = \frac{1-e^{-ts}}{s}$. aplicando as propriedades da transformada z:
+
+$$
+\begin{array}{lcl}
+    Z(\frac{1-e^{-ts}}{s}G(z)) &=& Z(\frac{1}{s}G(z)) - Z(\frac{e^{-ts}}{s}G(z))\\
+    &=& z(\frac{1}{s}G(z)) - (z^{-1})Z(\frac{1}{s}G(z))\\
+    &=& (1 - z^{-1})Z(\frac{1}{s}G(z))\\
+    &=& (1 - z^{-1})Z(\sympy{(1/s)*sG})\\
+\end{array}
+$$
+
+para facilitar o cálculo, fatorando o termo $\sympy{(1/s)*sG}$ pelo método de frações parciais:
+
+\begin{equation}\label{eq:ex4-partialfrac}
+\frac{G(s)}{s} = \frac{1}{s+1}-\frac{1}{s}+\frac{1}{s^2}
+\end{equation}
+
+pela tabela, temos que a transformada z de \ref{eq:ex4-partialfrac} é
+
+$$G(z) = \sympy{sGz}$$
+$$G(z) = \sympy{sGz.combsimp()}$$
+
+logo, substituindo $t = \sympy{nT}$ e simplificando temos:
+
+\begin{equation}
+    G(z) = \sympy{roundExpr(sGz.combsimp().subs(T,nT))}
+\end{equation}
+
+\subsection{Transformada w}
+
+Substituindo $z = \sympy{zw}$
+
+$$
+G(w) = G(z)|_{z=\sympy{zw}} = \sympy{sGw}
+$$
+
+substituindo $t = \sympy{nT}$ e simplificando temos
+
+\begin{equation}
+    G(w) = \sympy{roundExpr(sGw.combsimp().subs(T,nT))}
+\end{equation}
+
+\subsection{Calculo ganho planta}
+
+$$E_v = lim_{w \rightarrow 0}\ w G(w)$$
+$$E_v = lim_{w \rightarrow 0}\  \sympy{w*(sGw.combsimp())}$$
+$$E_v = lim_{w \rightarrow 0}\  \sympy{exprLimEv}$$
+$$E_v = \sympy{Ev}$$
+
+Como $K_v = \frac{1}{E_v} = \sympy{1/Ev}$  e $K_v = 2$ então $K = \sympy{nK}$
+
+\subsection{Diagrama de Bode}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim4-bodeplot-gw.png}
+    \caption{Diagrama de Bode para $G(w)$}
+\end{figure}
+
+\section{Conclusão}
+
+
+% ------------------------------------------------------------------------------
+\newpage
+% Referências
+\addcontentsline{toc}{section}{Referências} % Adiciona linha no indice
+\bibliographystyle{abbrv} % Define Estilo e gera bibliografia
+\bibliography{references} % Adiciona Arquivo com Referências
+
+% Acrescentadas no arquivo references.bib
+% para usa-las no texto basta usar \citep{}
+% para citar sem usar no texto basta usar \nocite{}
+\nocite{sympy}
+\nocite{pythontex}
+\nocite{matlabcontrol}
+\nocite{matlabsymbolic}
+
+% ------------------------------------------------------------------------------
+\newpage
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos} % Adiciona linha no indice
+%\subsection*{Python}
+
+%Para os cálculos e demonstrações foi utilizado o pacote \textit{Python}\TeX\ \cite{pythontex} para o \LaTeX\ em conjunto da bibliteca \textit{sympy}\cite{sympy}. Segue o script completo em python:
+
+%\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{python}{../python/exsim4.py}
+
+\newpage
+\subsection*{Matlab}
+
+%\subsubsection*{Parte 1}
+Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab} em conjunto das toolbox \textit{Control System}\cite{matlabcontrol} e \textit{Symbolic Math}\cite{matlabsymbolic}. Segue o código referente usado
+
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim4/exsim4.m}
+
+%\subsubsection*{Parte 2}
+%Na segunda parte foi utilizado uma versão modificada do script em \textit{Matlab} fornecido pelo professor:
+%\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt]{matlab}{../matlab/exsim2/exsim2script.m}
+
+
+
+% ------------------------------------------------------------------------------
+\end{document}
