@@ -61,8 +61,9 @@ sGw = sGz.combsimp().subs(z,zw)
 nGw = roundExpr(sGw.combsimp().subs(T,nT))
 
 # Find Kv
-exprLimEv = simplify(w*nGw)
-Ev = exprLimEv.subs(w,0)
+exprLimEv = w*sGw
+Ev = simplify(exprLimEv).subs(w,0)
 
 nK = solve(Eq(1/Ev,2),K)[0]
 
+# 
