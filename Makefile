@@ -61,7 +61,7 @@ clean-notes:
 report: ${PDFOUTPUT}
 
 # Implicity Rule to Compile texfile
-src/tex/%.pdf: src/tex/%.tex src/tex/%.pytexcode
+src/tex/%.pdf: src/tex/%.tex src/tex/%.pytexcode src/python/%.py
 	cd $(dir $<) && bibtex $(basename $(notdir $<))
 	cd $(dir $<) && $(TEX) $(TEXFLAGS) $(notdir $<)
 
@@ -84,7 +84,7 @@ clean-py:
 
 # Remove Generated PDF Files
 .PHONY = clean-pdf
-clean-pdf: clean-tex
+clean-pdf: clean-tex clean-py
 	rm -fv ${PDFOUTPUT}
 
 # Simulation Scripts ----------------------------------------------------------
