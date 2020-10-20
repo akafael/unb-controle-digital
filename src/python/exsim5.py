@@ -6,7 +6,7 @@ Laboratory Experiment 5 - Script
 
 from sympy import *
 
-def simplifyFraction(G, z = symbols("z",complex=True)):
+def simplifyFraction( G, z = symbols("z",complex=True) ):
     """
     Expand numerator and denominator from given fraction
     """
@@ -31,7 +31,7 @@ def partfrac( G, z = symbols("z",complex=True) ):
 
     return Gp
 
-def roundExpr(expr, num_digits=4):
+def roundExpr( expr, num_digits=4 ):
     """
     Round Every Number in an expression
     """
@@ -60,15 +60,14 @@ def canonicalFraction( expr, z = symbols("z",complex=True) ):
 
     return gain*(num/den)
 
+
 printing.printer.Printer().set_global_settings(precision=3)
 
 # Symbols
 s = symbols("s",complex=True)
 z = symbols("z",complex=True)
-w = symbols("w",complex=True)
-K,a1,a0,T,b = symbols("K alpha_1 alpha_0 T beta",real=True)
 
-nT = 0.2
+Ts = 1
 
 # Transfer Function
 K1 = 0.0125
@@ -91,6 +90,6 @@ sD1 = (1/sG1)*(sM1/(1-sM1))
 
 # Ripple Free Controler
 bz,az = fraction(sG2)
-l = 2
-sM2 = (bz/(bz.subs(z,1)))*(1/(z**l))
+l = 4
+sM2 = (bz/(Ts*bz.subs(z,1)))*(1/(z**l))
 sD2 = (1/sG2)*(sM2/(1-sM2))

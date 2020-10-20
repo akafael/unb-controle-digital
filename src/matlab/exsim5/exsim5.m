@@ -66,7 +66,7 @@ nG2 = vpa(sG2,4)
 num = poly2sym(poly(G2zeros),z)
 den = poly2sym(poly(G2poles),z)
 l = size(G2poles,2) % l => (#poles-#zeros) + #zeros = #poles
-num2 = polyval(poly(G2zeros),1)*(1/Ts)
+num2 = polyval(poly(G2zeros),1)*Ts
 sM2 = num/(num1*z^l)
 sGc2 = (den/num2)/(z^l-(num/num2))
 

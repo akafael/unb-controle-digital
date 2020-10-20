@@ -79,6 +79,20 @@ Temos que $n = \#polos - \#zeros + \#zeros = 3  - 2 + 2 = 1$
     G_2(z) = \sympy{sG2}
 \end{equation}
 
+Procedendo de forma similar, adotando a seguinte resposta em malha fechada
+
+$$
+M_2(z) = \sympy{roundExpr(sM2)}
+$$
+
+Substituindo $M(z) = M_1(z)$ na expressão \ref{eq:ex5-gc1}:
+
+$$G_{c2}(z) = \sympy{roundExpr(sD2)}$$
+
+Expandindo os termos:
+
+$$G_{c2}(z) = \sympy{roundExpr(simplifyFraction(sD2))}$$
+
 A partir do qual foi obtido a seguinte resposta em malha fechada para a rampa unitária:
 
 \begin{figure}[H]
@@ -162,10 +176,12 @@ Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab} em c
 
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim5/exsim5.m}
 
+\newpage
 \subsubsection*{Parte 3 - Controlador Dead Beat}
 Para avaliação da resposta do controlador Dead Beat foi utilizado uma versão modificada dos script \textit{exsim5script} em \textit{Matlab} fornecido pelo professor:
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim5/exsim5script.m}
 
+\newpage
 \subsubsection*{Parte 3 - Controlador Discretizado}
 Para comparativo com os resultados da simulação 2, foi utilizado uma versão modificada dos script \textit{exsim2script} em \textit{Matlab} fornecido pelo professor:
 \inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim5/exsim2script.m}
