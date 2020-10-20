@@ -33,8 +33,16 @@ from src.python.exsim5 import *
 
 \subsection{Part 1}
 
+Dado o sistema definido pela seguinte função de tranferência:
+
 \begin{equation}\label{eq:ex5-g1}
-    G_1(z) = \sympy{sG1}
+    G(z) = \frac{b(z)}{a(z)} = \sympy{sG1}
+\end{equation}
+
+Com a seguinte estrutura em malha fechada, em que $G_c(z)$ é um controlador discreto.
+
+\begin{equation}
+    M(z) = \frac{G_c(z)G(z)}{1 - G_c(z)G(z)}
 \end{equation}
 
 Para um controlador \textit{deadbeat} é buscado o erro zero para uma determinada entrada em tempo finito. Para tal podemos definir a função de transferência de malha fechada $M_1(z)$ desejada:
@@ -43,11 +51,22 @@ Para um controlador \textit{deadbeat} é buscado o erro zero para uma determinad
     M(z) = \frac{A(z)}{z^n}
 \end{equation}
 
-Isolando $G_c(z)$ temos
+Aplicando o teorema do valor final temos que o erro em regime permanente para a resposta ao degrau é dado por
+
+$$E_{ss} = lim_{z \rightarrow 1}(z - 1)\frac{A(z)}{z^n}\frac{z}{(z-1)}$$
+
+A partir do qual temos que $E_{ss} = 1 \Leftrightarrow A(z) = 1$. Assim podemos escolher $A(z) = 1$ para uma resposta em tempo mínimo, de modo que teremos uma resposta deadbeat no instantes amostrados. No entanto esta escolha acaba tendo como efeito a presentação de oscilação entre o instantes amostrados. Para evitar este problema foi adotado $A(z) = \frac{b(z)}{b(1}$ que representa um função de transferência normalizada em $z=1$ com os mesmos zeros que $G_1(z)$. Em outras palavras será adotado um contralador que tenha como efeito apenas alterar a resposta em regime permanente e a localização dos polos em malha fechada mas que conserve os mesmos zeros que a planta sem controlador.Para isto, isolando $G_c(z)$ na equação \ref{eq:ex5-gmf1} obtemos
+
+$$
+    G_{c}(z) = \frac{1}{G(z)}\frac{M(z)}{1-M(z)}
+$$
+
+Como $G(z) = \frac{b(z)}{a(z)}$, logo para a resposta em malha fechada escolhida teremos
 
 \begin{equation}\label{eq:ex5-gc1}
-    G_{c}(z) = \frac{1}{G(z)}\frac{M(z)}{1-M(z)}
+    G_{c}(z) = \frac{a(z)}{b(z)}\frac{\frac{b(z)}{b(1)}}{z^n-\frac{b(z)}{b(1)}}
 \end{equation}
+
 
 Para que o sistema seja realizavel é necessário que que $n \ge \#polos - \#zeros = 4  - 2 = 2$. Substituindo em \ref{eq:ex5-gmf1} temos
 
@@ -79,11 +98,13 @@ Temos que $n = \#polos - \#zeros + \#zeros = 3  - 2 + 2 = 1$
     G_2(z) = \sympy{sG2}
 \end{equation}
 
-Procedendo de forma similar, adotando a seguinte resposta em malha fechada
+Aplicando o teorema do valor final temos que o erro em regime permanente para a resposta a rampa é dado por
 
-$$
-M_2(z) = \sympy{roundExpr(sM2)}
-$$
+$$E_{ss} = lim_{z \rightarrow 1}(z - 1)^2\frac{A(z)}{z^n}\frac{T z}{(z-1)^2}$$
+
+Procedendo de forma similar, foi adotado a seguinte resposta em malha fechada
+
+$$M_2(z) = \sympy{roundExpr(sM2)}$$
 
 Substituindo $M(z) = M_1(z)$ na expressão \ref{eq:ex5-gc1}:
 
@@ -109,8 +130,7 @@ A partir do qual foi obtido a seguinte resposta em malha fechada para a rampa un
     \caption{Diagrama de Blocos do Sistema no Simulink - Planta exsim5}
 \end{figure}
 
-
-\subsubsection{}
+\subsubsection{Comparação Controle Deadbeat vs Controle Discratizado}
 
 Para o fins de comparação foi adotado a seguinte diagrama para o controle projetados para o exercício de simulação 2:
 
@@ -141,6 +161,7 @@ Comparando ambas simulações percebemos que a metodologia adotada para o projet
 
 \section{Conclusão}
 
+O controlador deadbeat constitui uma opção interessante por garantir de em um tempo finito o erro $0$ em regime permanente para uma determinada entrada de referência. Constindo por tanto uma opção bastante interessante para projetos de posicionamento como servo mecanismos ao custo que acaba trazendo uma resposta bastante agressiva para o controlador, podendo provocar um desgate do atuador caso seja especificado tempos de amostragem muito curtos.
 
 % ------------------------------------------------------------------------------
 \newpage
