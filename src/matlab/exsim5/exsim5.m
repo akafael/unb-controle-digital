@@ -14,15 +14,42 @@ syms s z T
 
 %% Part 1
 % Transfer Function
+Ts = 1
 K1 = 0.0125
 G1zeros = [-0.195 -2.821]
 G1poles = [0 1 0.368 0.8187]
-G1 = zpk(G1zeros,G1poles,K1)
+G1 = zpk(G1zeros,G1poles,K1,Ts)
 
 % Convert TF to symbolic
-%[num den] = tfdata(G1,'v')
-%sG1 = poly2sym(num,z)/poly2sym(den,z)
-%nG1 = vpa(simplify(subs(sG1,T,Ts)),4)
+sG1 = poly2sym(poly(G1zeros),z)/poly2sym(poly(G1poles),z)
+nG1 = vpa(sG1,4)
+
+% Minimum-Time Deadbeat Control
+[num,den] = numden(sG1)
+l = size(solve(den,z),1)-size(solve(num,z),1) % l => (#poles-#zeros)
+
+% Ripple Free Deadbeat Controler
+num = poly2sym(poly(G1zeros),z)
+den = poly2sym(poly(G1poles),z)
+l = size(G1poles,2) % l => (#poles-#zeros) + #zeros = #poles
+num1 = polyval(poly(G1zeros),1)
+sM1 = num/(num1*z^l)
+sGc1 = (den/num1)/(z^l-(num/num1))
+
+% Ripple Free Controler
+Gc1 = zpk(tf(poly((1/num1)*G1poles),sym2poly(z^l -(1/num1)*num),Ts))
+
+% Ripple Free Closed Loop Transfer Function
+M1 = zpk((1/num1)*G1zeros,zeros(1,l),1,Ts)
+
+fig = figure()
+title("Ripple Free Deadbeat")
+step(M1)
+xticks(0:Ts:20)
+grid
+legend('M_1(z)')
+print(fig, strcat(img_path,"exsim5-g1-deadbeat-sim.png"),"-dpng")
+
 
 %% Part 2
 % Transfer Function
@@ -32,8 +59,30 @@ G2poles = [1 1 0.2865]
 G2 = zpk(G2zeros,G2poles,K2)
 
 % Convert TF to symbolic
-%[num den] = tfdata(G2,'v')
-%sG2 = poly2sym(num,z)/poly2sym(den,z)
-%nG2 = vpa(simplify(subs(sG2,T,Ts)),4)
+sG2 = poly2sym(poly(G2zeros),z)/poly2sym(poly(G2poles),z)
+nG2 = vpa(sG2,4)
 
-% OST: The Rolling Stones
+% Ripple Free Deadbeat Controler
+num = poly2sym(poly(G2zeros),z)
+den = poly2sym(poly(G2poles),z)
+l = size(G2poles,2) % l => (#poles-#zeros) + #zeros = #poles
+num2 = polyval(poly(G2zeros),1)*(1/Ts)
+sM2 = num/(num1*z^l)
+sGc2 = (den/num2)/(z^l-(num/num2))
+
+% Ripple Free Controler
+Gc2 = zpk(tf(poly((1/num2)*G2poles),sym2poly(z^l -(1/num2)*num),Ts))
+
+% Ripple Free Closed Loop Transfer Function
+M2 = zpk((1/num2)*G2zeros,zeros(1,l),1,Ts)
+
+% Graphical Evaluation
+fig = figure()
+title("Ripple Free Deadbeat")
+lsim(M2,0:Ts:20)
+xticks(0:Ts:20)
+grid
+legend('M_2(z)')
+print(fig, strcat(img_path,"exsim5-g2-deadbeat-sim.png"),"-dpng")
+
+% Soundtrack: Dust in the Wind - Kansas

@@ -1,0 +1,176 @@
+% Pacotes e configurações padrão do estilo ``article''\
+% -------------------------------------
+\documentclass[a4paper,11pt]{article}
+% Layout
+% ------------------------------------------------------------------------------
+\input{relat_layout.tex}
+
+%\usepackage{circuitikz}
+\usepackage[makestderr]{pythontex}
+
+\title{Laboratório 5} % Define o título do Relatório
+\author{Rafael Lima}
+
+% Definições Auxiliares ( Macros próprias )
+% ------------------------------------------------------------------------------
+%\input{relat_aux.tex} % Arquivo com minhas macros
+\newcommand{\npy}[1]{\sympy{round(#1,4)}}
+% ----------------------------------~>ø<~---------------------------------------
+\begin{document}
+% Capa e Índice ----------------------------------------------------------------
+\input{relat_capa.tex} % Capa para UnB
+% Conteúdo ---------------------------------------------------------------------
+
+\section{Projeto de Controlador Deadbeat}
+
+% Código fonte colocado a parte para facilitar validação dentro do ipython
+\begin{sympycode}
+# Get Source Code
+sys.path.insert(1, '../../')
+from src.python.exsim5 import *
+\end{sympycode}
+
+
+\subsection{Part 1}
+
+\begin{equation}\label{eq:ex5-g1}
+    G_1(z) = \sympy{sG1}
+\end{equation}
+
+Para um controlador \textit{deadbeat} é buscado o erro zero para uma determinada entrada em tempo finito. Para tal podemos definir a função de transferência de malha fechada $M_1(z)$ desejada:
+
+\begin{equation}\label{eq:ex5-gmf1}
+    M(z) = \frac{A(z)}{z^n}
+\end{equation}
+
+Isolando $G_c(z)$ temos
+
+\begin{equation}\label{eq:ex5-gc1}
+    G_{c}(z) = \frac{1}{G(z)}\frac{M(z)}{1-M(z)}
+\end{equation}
+
+Para que o sistema seja realizavel é necessário que que $n \ge \#polos - \#zeros = 4  - 2 = 2$. Substituindo em \ref{eq:ex5-gmf1} temos
+
+$$
+M_1(z) = \sympy{roundExpr(sM1)}
+$$
+
+Substituindo $M(z) = M_1(z)$ na expressão \ref{eq:ex5-gc1}:
+
+$$G_{c1}(z) = \sympy{roundExpr(sD1)}$$
+
+Expandindo os termos:
+
+$$G_{c1}(z) = \sympy{roundExpr(simplifyFraction(sD1))}$$
+
+Com isto foi obtido a seguinte resposta ao degrau unitário:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/exsim5-g1-deadbeat-sim.png}
+    \caption{Resposta do Sistema para o controlador Deadbeat para sistema \ref{eq:ex5-g1}}
+\end{figure}
+
+\subsection{Part 2}
+
+Temos que $n = \#polos - \#zeros + \#zeros = 3  - 2 + 2 = 1$
+
+\begin{equation}\label{eq:ex5-g2}
+    G_2(z) = \sympy{sG2}
+\end{equation}
+
+A partir do qual foi obtido a seguinte resposta em malha fechada para a rampa unitária:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/exsim5-g2-deadbeat-sim.png}
+    \caption{Resposta do Sistema para o controlador Deadbeat para sistema \ref{eq:ex5-g1}}
+\end{figure}
+
+\subsection{Part 1}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim5model.png}
+    \caption{Diagrama de Blocos do Sistema no Simulink - Planta exsim5}
+\end{figure}
+
+
+\subsubsection{}
+
+Para o fins de comparação foi adotado a seguinte diagrama para o controle projetados para o exercício de simulação 2:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/exsim2model.png}
+    \caption{Diagrama de Blocos do Sistema no Simulink - Planta exsim2}
+\end{figure}
+
+Com base nos valores definidos em script, foram obtidos os seguintes resultados para a simulação:
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[m]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/exsim5-deadbeat-sim.png}
+        \caption{Controlador Deadbeat - exsim5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[m]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/exsim5-exsim2-sim.png}
+        \caption{Controlador Discretizado - exsim2}
+    \end{subfigure}
+\end{figure}
+
+Comparando ambas simulações percebemos que a metodologia adotada para o projeto do controlador na lanta exsim2 acaba levando mais tempo para estabilizar e têm um atraso em relação ao sistema contínuo. Enquanto para o controle da planta exsim5 é percebido uma resposta mais rápida e também uma ação de controle bme mais agressiva para um mesmo tempo de amostragem contando com uma varição bastante brusca do sinal passado para a planta. Algo que é característico de controladores deadbeat.
+
+\section{Conclusão}
+
+
+% ------------------------------------------------------------------------------
+\newpage
+% Referências
+\addcontentsline{toc}{section}{Referências} % Adiciona linha no indice
+\bibliographystyle{abbrv} % Define Estilo e gera bibliografia
+\bibliography{references} % Adiciona Arquivo com Referências
+
+% Acrescentadas no arquivo references.bib
+% para usa-las no texto basta usar \citep{}
+% para citar sem usar no texto basta usar \nocite{}
+\nocite{sympy}
+\nocite{pythontex}
+\nocite{matlabcontrol}
+\nocite{matlabsymbolic}
+\nocite{ogata2010modern}
+
+% ------------------------------------------------------------------------------
+\newpage
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos} % Adiciona linha no indice
+\subsection*{Python}
+
+Para os cálculos e demonstrações foi utilizado o pacote \textit{Python}\TeX\ \cite{pythontex} para o \LaTeX\ em conjunto da bibliteca \textit{sympy}\cite{sympy}. Segue o script completo em python:
+
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{python}{../python/exsim5.py}
+
+\newpage
+\subsection*{Matlab}
+
+\subsubsection*{Parte 1}
+Para o desenho dos gráficos e simulações foi utilizado o \textit{Matlab} em conjunto das toolbox \textit{Control System}\cite{matlabcontrol} e \textit{Symbolic Math}\cite{matlabsymbolic}. Segue o código referente usado
+
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim5/exsim5.m}
+
+\subsubsection*{Parte 3 - Controlador Dead Beat}
+Para avaliação da resposta do controlador Dead Beat foi utilizado uma versão modificada dos script \textit{exsim5script} em \textit{Matlab} fornecido pelo professor:
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim5/exsim5script.m}
+
+\subsubsection*{Parte 3 - Controlador Discretizado}
+Para comparativo com os resultados da simulação 2, foi utilizado uma versão modificada dos script \textit{exsim2script} em \textit{Matlab} fornecido pelo professor:
+\inputminted[xleftmargin=15pt,linenos,frame=single,framesep=5pt,breaklines=true]{matlab}{../matlab/exsim5/exsim2script.m}
+
+
+
+% ------------------------------------------------------------------------------
+\end{document}

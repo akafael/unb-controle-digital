@@ -1,5 +1,12 @@
+%% EXSIM2 - Script
+
+% Start Safe n Sound by Clean Up Everything
 clear
 close all
+
+% Get path from current file and generate absolute path
+file_path = fileparts(mfilename('fullpath'))
+img_path = strcat(file_path,"/../../tex/img/")
 
 global newx alpha T u1 y1
 
@@ -27,19 +34,35 @@ kc1 = 5/(4*alpha);
 
 newx = 0;
 tf = 20;
-sim('exsim2model')
-figure
+
+% Run Simulation
+modelFileName = 'exsim2model'
+sim(modelFileName)
+
+% Export Model as PNG
+pictureFileName = strcat(img_path,modelFileName,'.png');   % Generate name from model name
+print(['-s',modelFileName],'-dpng',pictureFileName);      % Generate PDF
+
+
+fig = figure()
 subplot(211)
 plot(y(:,1),y(:,2),y(:,1),y(:,3))
 title('T = 1.4/\omega_0')
 xlabel('t(s)')
 ylabel('y')
+xticks(0:T:tf)
 grid
 legend('continuo','deadbeat')
+
 subplot(212)
 stairs(u(:,1),u(:,3),'r')
 hold on
 plot(u(:,1),u(:,2))
 xlabel('t(s)')
 ylabel('u')
+xticks(0:T:tf)
 grid
+
+hold off;
+print(fig, strcat(img_path,"exsim5-exsim2-sim.png"),"-dpng")
+
