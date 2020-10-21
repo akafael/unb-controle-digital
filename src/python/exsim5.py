@@ -83,13 +83,25 @@ sG2 = simboliczpk(G2zeros,G2poles,K2)
 
 # Ripple Free Deadbeat Controler
 bz,az = fraction(sG1)
-l = 4
-sM1 = (bz/(bz.subs(z,1)))*(1/(z**l))
+n = len(G1poles)
+sM1 = (bz/(bz.subs(z,1)))*(1/(z**n))
 sD1 = (1/sG1)*(sM1/(1-sM1))
 
-
-# Ripple Free Controler
+# Deadbeat Controler
 bz,az = fraction(sG2)
-l = 4
-sM2 = (bz/(Ts*bz.subs(z,1)))*(1/(z**l))
+n = len(G1poles) - len(G1zeros)
+sM2 = ((n+1)*z-n)/(z**(n+1))
 sD2 = (1/sG2)*(sM2/(1-sM2))
+
+# Question 3
+a,b,kp,kc,J,w0,T = symbols("a b k_P k_C J omega_0 T")
+
+G22 = kp/(J*s*s)
+H22 = kc*(s+b)/(s+a)
+G21 = b*kc/a
+
+G22mf = G21*(G22/(1+G22*H22))
+
+Gz22 = (1-z**(-1))*((kp*(T**2))/(2*J))*(z*(z+1)/((z-1)**3))
+sGz22 = ((T**2)*kp/(2*J))*(z+1)/((z-1)**2)
+

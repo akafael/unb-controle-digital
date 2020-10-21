@@ -56,25 +56,19 @@ print(fig, strcat(img_path,"exsim5-g1-deadbeat-sim.png"),"-dpng")
 K2 = 0.0003916
 G2zeros = [-2.8276 -0.19]
 G2poles = [1 1 0.2865]
-G2 = zpk(G2zeros,G2poles,K2)
+G2 = zpk(G2zeros,G2poles,K2,Ts)
 
 % Convert TF to symbolic
 sG2 = poly2sym(poly(G2zeros),z)/poly2sym(poly(G2poles),z)
 nG2 = vpa(sG2,4)
 
-% Ripple Free Deadbeat Controler
-num = poly2sym(poly(G2zeros),z)
-den = poly2sym(poly(G2poles),z)
-l = size(G2poles,2) % l => (#poles-#zeros) + #zeros = #poles
-num2 = polyval(poly(G2zeros),1)*Ts
-sM2 = num/(num1*z^l)
-sGc2 = (den/num2)/(z^l-(num/num2))
+% Deadbeat Controler
+n = size(G2poles,2) - size(G2zeros,2) % n => (#poles-#zeros)
+sM2 = ((n+1)*z+n)/(z^(n+1))
+sGc2 = (1/sG2)*(((n+1)*z+n)/(z^(n+1)-((n+1)*z +n)))
 
-% Ripple Free Controler
-Gc2 = zpk(tf(poly((1/num2)*G2poles),sym2poly(z^l -(1/num2)*num),Ts))
-
-% Ripple Free Closed Loop Transfer Function
-M2 = zpk((1/num2)*G2zeros,zeros(1,l),1,Ts)
+M2 = zpk(tf([(n+1) n],[1 zeros(1,n)],Ts))
+Gc2 = zpk((1/G2)*(M2/(1-M2)))
 
 % Graphical Evaluation
 fig = figure()
