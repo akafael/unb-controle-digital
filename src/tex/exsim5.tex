@@ -31,7 +31,7 @@ from src.python.exsim5 import *
 \end{sympycode}
 
 
-\subsection{Part 1}
+\subsection{Controlador com erro zero para degrau unitário}
 
 Dado o sistema definido pela seguinte função de tranferência:
 
@@ -82,6 +82,12 @@ Expandindo os termos:
 
 $$G_{c1}(z) = \sympy{roundExpr(simplifyFraction(sD1))}$$
 
+Colocando na forma fatorada destacando os zeros, polos e o ganho:
+
+\begin{equation}
+    G_{c1}(z) = \frac{z (z-0.219) (z-0.1793) (z-0.08059)}{(z-1) (z+0.1926) (z^2 + 0.8074z + 0.6255)}
+\end{equation}
+
 Com isto foi obtido a seguinte resposta ao degrau unitário:
 
 \begin{figure}[H]
@@ -90,8 +96,9 @@ Com isto foi obtido a seguinte resposta ao degrau unitário:
     \caption{Resposta do Sistema para o controlador Deadbeat para sistema \ref{eq:ex5-g1}}
 \end{figure}
 
-\subsection{Part 2}
+\subsection{Controlador com erro zero para rampa unitária}
 
+Dado um sistema definido pela seguinte função de transferência:
 
 \begin{equation}\label{eq:ex5-g2}
     G_2(z) = \sympy{sG2}
@@ -119,6 +126,12 @@ Expandindo os termos:
 
 $$G_{c2}(z) = \sympy{roundExpr(simplifyFraction(sD2))}$$
 
+Colocando na forma fatorada destacando os zeros, polos e o ganho:
+
+\begin{equation}
+    G_{c2}(z) = \frac{5107.3 z (z-1)^2 (z-0.2865) (z+0.5)}{z (z+2.828) (z+1) (z+0.19)}
+\end{equation}
+
 A partir do qual foi obtido a seguinte resposta em malha fechada para a rampa unitária:
 
 \begin{figure}[H]
@@ -127,15 +140,19 @@ A partir do qual foi obtido a seguinte resposta em malha fechada para a rampa un
     \caption{Resposta do Sistema para o controlador Deadbeat para sistema \ref{eq:ex5-g1}}
 \end{figure}
 
-\subsection{Part 3}
+\subsection{Comparação com outras técnicas de projeto}
+
+O controlador \textit{deadbeat} traz vantagens e desvantagens conforme a aplicação desejada. Para verificar isto, será utilizado o projeto de controlador definido no Exercício de Simulação 2. O qual será novamente reproduzido aqui.
 
 \subsubsection{Sistema em Malha Fechada}
 
-Dado $G(s)$
+Dado a função de tranferência de malha aberta $G(s)$
 
 \begin{equation}
     G(s) = \frac{Y(s)}{U(s)} \sympy{G22}
 \end{equation}
+
+Em que
 
 \begin{equation}
     U(s) = \sympy{G21}U_C(s) - \sympy{H22}Y(s)
@@ -160,7 +177,7 @@ Simplificando
     G_{mf}(s) = \sympy{simplifyFraction(G22mf.subs([(a,2*w0),(b,w0/2),(kc,2*J*w0*w0/kp)]),s)}
 \end{equation}
 
-\subsubsection{}
+\subsubsection{Discretização da Planta}
 
 A discretização pode ser aproximada aplicando-se a transformada Z em conjunto de um segurador de ordem zero em série com o sistema. Desta forma temos $G_o(z) = Z(G_{zoh}(s)G(s)$ onde $G_{zoh}(s) = \frac{1-e^{-Ts}}{s}$. Aplicando as propriedades da transformada Z:
 
@@ -200,13 +217,74 @@ $$
 $$
 
 De modo que temos a seguinte equação de diferenças:
-
 \begin{equation}
  Y[k] +  2Y[k -1] +  Y[k - 2]
  = \left(\frac{T^2 k_{P}}{2J}\right)\left(U[k -1] +  U[k - 2]\right)
 \end{equation}
 
-\subsubsection{}
+\subsubsection{Função Transferência de malha fechada}
+
+Dado a seguinte equação de diferenças do sinal de controle
+
+\begin{equation}
+    u[k] = t_0 u_C[k] - s_0 y[k] - s_1 y[k-1] - r_1 u[k -1]
+\end{equation}
+
+Usolando os termos de $u[k]$ e aplicando a transformada Z:
+
+$$u[k] + r_1 u[k -1] = t_0 u_C[k] - s_0 y[k] - s_1 y[k-1]$$
+$$U(z) + r_1 z^{-1}U(z) = t_0 U_C(z) - s_0 Y(z) - s_1 z^{-1}Y(z)$$
+
+Agrupando os termos comuns e isolando $U(z)$:
+
+$$U(z)\left(1 + r_1 z^{-1}\right) = t_0 U_C(z) - Y(z)\left(s_0 + s_1 z^{-1}\right)$$
+
+\begin{equation}
+U(z) = U_C(z)\frac{t_0}{\left(1 + r_1 z^{-1}\right)} -
+  Y(z)\frac{\left(s_0 + s_1 z^{-1}\right)}{\left(1 + r_1 z^{-1}\right)}
+\end{equation}
+
+Substuindo:
+
+$$
+    Y(z) =\left(\frac{T^2 k_{P}}{2J}\right)\frac{z^{-1}(1+z^{-1})}{(1-z^{-1})^2}U(z)
+$$
+$$
+    Y(z) = \left(\frac{T^2 k_{P}}{2J}\right)\frac{z^{-1}(1+z^{-1})}{(1-z^{-1})^2}\left( U_C(z)\frac{t_0}{\left(1 + r_1 z^{-1}\right)} - Y(z)\frac{\left(s_0 + s_1 z^{-1}\right)}{\left(1 + r_1 z^{-1}\right)}\right)
+$$
+
+$$
+    Y(z)\left(1 + \frac{\left(s_0 + s_1 z^{-1}\right)}{\left(1 + r_1 z^{-1}\right)}\right)
+= U_c(z)\left(\frac{T^2 k_{P}}{2J}\right)\left(\frac{z^{-1}(1+z^{-1})}{(1-z^{-1})^2}\right)\left( \frac{t_0}{\left(1 + r_1 z^{-1}\right)}\right)
+$$
+
+De forma que a função em malha fechada com o controlador fica:
+
+$$
+    \frac{Y(z)}{U_c(z)} = \left(\frac{T^2 k_{P}}{2J}\right)\frac{\left(\frac{z^{-1}(1+z^{-1})}{(1-z^{-1})^2}\right)\left( \frac{t_0}{\left(1 + r_1 z^{-1}\right)}\right)}{\left(1 + \frac{\left(s_0 + s_1 z^{-1}\right)}{\left(1 + r_1 z^{-1}\right)}\right)}
+$$
+
+$$
+    \frac{Y(z)}{U_c(z)} = \left(\frac{T^2 k_{P}t_0}{2J}\right)
+    \frac{
+        z^{-1}(1+z^{-1})
+    }{
+        (1-z^{-1})^2 \left((1 + r_1 z^{-1}) + \left(s_0 + s_1 z^{-1}\right)\right)
+     }
+$$
+
+\begin{equation}
+    \frac{Y(z)}{U_c(z)} = \left(\frac{T^2 k_{P}t_0}{2J}\right)
+    \frac{
+        z^{-1}(1+z^{-1})
+    }{
+        (1-z^{-1})^2 \left((1 + s_0) + (r_1 + s_1) z^{-1}\right)
+     }
+\end{equation}
+
+\subsubsection{Controladores}
+
+Dado o sistema definido abaixo
 
 \begin{figure}[H]
     \centering
