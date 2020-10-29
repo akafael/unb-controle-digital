@@ -20,6 +20,8 @@ G1zeros = [-0.195 -2.821]
 G1poles = [0 1 0.368 0.8187]
 G1 = zpk(G1zeros,G1poles,K1,Ts)
 
+Tend = 20
+
 % Convert TF to symbolic
 sG1 = poly2sym(poly(G1zeros),z)/poly2sym(poly(G1poles),z)
 nG1 = vpa(sG1,4)
@@ -43,13 +45,21 @@ Gc1 = zpk(tf(poly((1/num1)*G1poles),sym2poly(z^l -(1/num1)*num),Ts))
 M1 = zpk((1/num1)*G1zeros,zeros(1,l),1,Ts)
 
 fig = figure()
-title("Ripple Free Deadbeat")
 step(M1)
-xticks(0:Ts:20)
+xticks(0:Ts:Tend)
 grid
+title("Ripple Free Deadbeat - Step")
 legend('M_1(z)')
 print(fig, strcat(img_path,"exsim5-g1-deadbeat-sim.png"),"-dpng")
 
+% Graphical Evaluation
+fig = figure()
+lsim(M1,0:Ts:Tend,0:Ts:Tend)
+xticks(0:Ts:Tend)
+grid
+title("Ripple Free Deadbeat - Ramp")
+legend('M_1(z)')
+print(fig, strcat(img_path,"exsim5-g1-ramp-sim.png"),"-dpng")
 
 %% Part 2
 % Transfer Function
@@ -63,19 +73,28 @@ sG2 = poly2sym(poly(G2zeros),z)/poly2sym(poly(G2poles),z)
 nG2 = vpa(sG2,4)
 
 % Deadbeat Controler
-n = size(G2poles,2) - size(G2zeros,2) % n => (#poles-#zeros)
+n = size(G2poles,2) - size(G2zeros,2) + 1 % n => (#poles-#zeros)
 sM2 = ((n+1)*z+n)/(z^(n+1))
 sGc2 = (1/sG2)*(((n+1)*z+n)/(z^(n+1)-((n+1)*z +n)))
 
 M2 = zpk(tf([(n+1) n],[1 zeros(1,n)],Ts))
 Gc2 = zpk((1/G2)*(M2/(1-M2)))
 
+% Step
+fig = figure()
+step(M2)
+xticks(0:Ts:Tend)
+grid
+title("Deadbeat - Step")
+legend('M_2(z)')
+print(fig, strcat(img_path,"exsim5-g2-step-sim.png"),"-dpng")
+
 % Graphical Evaluation
 fig = figure()
-title("Ripple Free Deadbeat")
-lsim(M2,0:Ts:20)
-xticks(0:Ts:20)
+lsim(M2,0:Ts:Tend,0:Ts:Tend)
+xticks(0:Ts:Tend)
 grid
+title("Deadbeat - Ramp")
 legend('M_2(z)')
 print(fig, strcat(img_path,"exsim5-g2-deadbeat-sim.png"),"-dpng")
 

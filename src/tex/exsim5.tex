@@ -92,8 +92,18 @@ Com isto foi obtido a seguinte resposta ao degrau unitário:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{img/exsim5-g1-deadbeat-sim.png}
-    \caption{Resposta do Sistema para o controlador Deadbeat para sistema \ref{eq:ex5-g1}}
+    \begin{subfigure}[m]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/exsim5-g1-deadbeat-sim.png}
+        \caption{Degrau Unitário}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[m]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/exsim5-g1-ramp-sim.png}
+        \caption{Rampa Unitária}
+    \end{subfigure}
+    \caption{Resposta do Sistema}
 \end{figure}
 
 \subsection{Controlador com erro zero para rampa unitária}
@@ -132,13 +142,25 @@ Colocando na forma fatorada destacando os zeros, polos e o ganho:
     G_{c2}(z) = \frac{5107.3 z (z-1)^2 (z-0.2865) (z+0.5)}{z (z+2.828) (z+1) (z+0.19)}
 \end{equation}
 
-A partir do qual foi obtido a seguinte resposta em malha fechada para a rampa unitária:
+A partir do qual foi obtido a seguinte resposta em malha fechada para o degrau unitário e para a rampa unitária:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{img/exsim5-g2-deadbeat-sim.png}
-    \caption{Resposta do Sistema para o controlador Deadbeat para sistema \ref{eq:ex5-g1}}
+    \begin{subfigure}[m]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/exsim5-g2-step-sim.png}
+        \caption{Degrau Unitário}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[m]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/exsim5-g2-deadbeat-sim.png}
+        \caption{Rampa Unitária}
+    \end{subfigure}
+    \caption{Resposta do Sistema}
 \end{figure}
+
+Ao que podemos perceber que a resposta ao degrau unitário também produz um erro zero em tempo finito.
 
 \subsection{Comparação com outras técnicas de projeto}
 
