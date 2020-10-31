@@ -25,6 +25,7 @@ F = [F1 F2]
 L1 = sym('L_1')
 L2 = sym('L_2')
 L = [L1;L2]
+N = sym("N")
 
 % Find Characterist Eq.
 I = eye(size(A))
@@ -43,6 +44,21 @@ polyObsDesired = poly(10*desiredPoles)
 polyL = (polyObs - polyObsDesired)
 [m,v] = equationsToMatrix(polyL(1:end-1),L);
 nL = double(linsolve(m,v))
+
+% Closed Loop Space State Expression
+Amf = A - B*nF - nL*C - B*N*C
+Bmf = B*N
+Cmf = C
+
+% Find Outer Loop Characteristic Equation
+I = eye(size(Amf));
+polyMf = flip(coeffs(det(z*I-Amf),z))
+
+% Find Desired Poles
+polesDesired = [complex(0.5,-0.5),complex(0.5,0.5)];
+polyDesired = poly(polesDesired)
+
+N = 1
 
 % Run Simulation
 modelFileName = 'exsim6_ss_model'

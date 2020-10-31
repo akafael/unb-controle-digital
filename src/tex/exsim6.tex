@@ -30,6 +30,113 @@ sys.path.insert(1, '../../')
 from src.python.exsim6 import *
 \end{sympycode}
 
+Dado o sistema descrito por
+
+$$ x[k+1] = \sympy{G} x[x] + \sympy{H} u[k] $$
+$$ y[k] = \sympy{C} x[x] $$
+
+Onde $G=\sympy{G}$, $H=\sympy{H}$ e $C=\sympy{C}$.
+
+\subsection{Calculo ganho feedback}
+
+Supondo $F = \sympy{F}$
+
+$$A_{ma} = \sympy{z*eye(2)} - \sympy{G} + \sympy{H}\sympy{F}$$
+$$A_{ma} = \sympy{z*eye(2)} - \sympy{G -H*F}$$
+$$A_{ma} = \sympy{z*eye(2) - (G -H*F)}$$
+
+Logo temos que o polinômio característico para o sistema com realimentação é dado por 
+
+$$\phi(z) = det\sympy{Ama}$$
+$$\phi(z) = \sympy{det(Ama)}$$
+
+Temos que o polinômio caracteristico desejado é dado por
+
+$$\phi_d(z) = \sympy{polyDesired}$$
+$$\phi_d(z) = \sympy{simplify(polyDesired)}$$
+
+Se $\phi(z) = \phi_d(z)$ logo
+
+$$
+\left\{
+    \begin{array}{l}
+        \sympy{polyPlant.coeff(z,0)} = \sympy{polyDesired.coeff(z,0)}\\
+        \sympy{polyPlant.coeff(z,1)} = \sympy{polyDesired.coeff(z,1)}\\
+        \sympy{polyPlant.coeff(z,2)} = \sympy{polyDesired.coeff(z,2)}\\
+    \end{array}
+\right.
+$$
+
+Resolvendo o sistema temos $f_1 = \sympy{nf1} $ e $f_2 = \sympy{nf2}$
+
+\subsection{Calculo ganho observador polos iguais}
+
+Supondo $L = \sympy{L}$
+
+$$A_{ma} = \sympy{z*eye(2)} - \sympy{G} + \sympy{L}\sympy{C}$$
+$$A_{ma} = \sympy{z*eye(2)} - \sympy{G -L*C}$$
+$$A_{ma} = \sympy{z*eye(2) - (G -L*C)}$$
+
+Logo temos que o polinômio característico para o sistema com realimentação é dado por 
+
+$$\phi(z) = det\sympy{Amo}$$
+$$\phi(z) = \sympy{det(Amo)}$$
+$$\phi(z) = \sympy{collect(det(Amo),z)}$$
+
+Temos que o polinômio caracteristico desejado é dado por
+
+$$\phi_d(z) = \sympy{polyObsDesired}$$
+$$\phi_d(z) = \sympy{simplify(polyObsDesired)}$$
+
+Se $\phi(z) = \phi_d(z)$ logo
+
+$$
+\left\{
+    \begin{array}{l}
+        \sympy{polyObs.coeff(z,0)} = \sympy{polyObsDesired.coeff(z,0)}\\
+        \sympy{polyObs.coeff(z,1)} = \sympy{polyObsDesired.coeff(z,1)}\\
+        \sympy{polyObs.coeff(z,2)} = \sympy{polyObsDesired.coeff(z,2)}\\
+    \end{array}
+\right.
+$$
+
+Resolvendo o sistema temos $l_1 = \sympy{nl1} $ e $l_2 = \sympy{nl2}$
+
+\subsection{Calculo ganho observador polos mais rápidos}
+
+Supondo $L = \sympy{L}$
+
+$$A_{ma} = \sympy{z*eye(2)} - \sympy{G} + \sympy{L}\sympy{C}$$
+$$A_{ma} = \sympy{z*eye(2)} - \sympy{G -L*C}$$
+$$A_{ma} = \sympy{z*eye(2) - (G -L*C)}$$
+
+Logo temos que o polinômio característico para o sistema com realimentação é dado por 
+
+$$\phi(z) = det\sympy{Amo}$$
+$$\phi(z) = \sympy{collect(det(Amo),z)}$$
+
+Temos que o polinômio caracteristico desejado é dado por
+
+$$\phi_d(z) = \sympy{polyObsDesired2}$$
+$$\phi_d(z) = \sympy{simplify(polyObsDesired2)}$$
+
+Se $\phi(z) = \phi_d(z)$ logo
+
+$$
+\left\{
+    \begin{array}{l}
+        \sympy{polyObs.coeff(z,0)} = \sympy{polyObsDesired2.coeff(z,0)}\\
+        \sympy{polyObs.coeff(z,1)} = \sympy{polyObsDesired2.coeff(z,1)}\\
+        \sympy{polyObs.coeff(z,2)} = \sympy{polyObsDesired2.coeff(z,2)}\\
+    \end{array}
+\right.
+$$
+
+Resolvendo o sistema temos $l_1 = \sympy{nl21} $ e $l_2 = \sympy{nl22}$
+
+\subsection{Simulação Sistema}
+
+Para simular o sistema sem o observador foi utilizado a seguinte representação da planta
 
 \begin{figure}[H]
     \centering
@@ -37,11 +144,23 @@ from src.python.exsim6 import *
     \caption{Diagrama de Blocos do Sistema no Simulink do Controlador sem Observador - Planta exsim6}
 \end{figure}
 
+Para a versão com observador foi utilizado a seguinte versão
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{img/exsim6_ss_observer_model.png}
     \caption{Diagrama de Blocos do Sistema no Simulink do Controlador com Observador - Planta exsim6}
 \end{figure}
+
+\subsubsection{Sistema sem observador}
+
+Como efeito para o sistema sem observador foram obtidas as seguintes respostas
+
+\subsubsection{Sistema com observador com polos iguais}
+
+Como efeito para o sistema sem observador foram obtidas as seguintes respostas
+
+\subsubsection{Sistema com observador com polos mais rápidos}
 
 \section{Conclusão}
 
