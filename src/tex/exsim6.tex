@@ -141,7 +141,7 @@ Para simular o sistema sem o observador foi utilizado a seguinte representação
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{img/exsim6_ss_model.png}
-    \caption{Diagrama de Blocos do Sistema no Simulink do Controlador sem Observador - Planta exsim6}
+    \caption{Diagrama de Blocos do Sistema no Simulink do Controlador sem Observador}
 \end{figure}
 
 Para a versão com observador foi utilizado a seguinte versão
@@ -149,20 +149,43 @@ Para a versão com observador foi utilizado a seguinte versão
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{img/exsim6_ss_observer_model.png}
-    \caption{Diagrama de Blocos do Sistema no Simulink do Controlador com Observador - Planta exsim6}
+    \caption{Diagrama de Blocos do Sistema no Simulink do Controlador com Observador}
 \end{figure}
 
 \subsubsection{Sistema sem observador}
 
 Como efeito para o sistema sem observador foram obtidas as seguintes respostas
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ss-sim.png}
+    \caption{Resposta Sistema controlador sem observador}
+\end{figure}
+
 \subsubsection{Sistema com observador com polos iguais}
 
 Como efeito para o sistema sem observador foram obtidas as seguintes respostas
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs-sim.png}
+    \caption{Resposta Sistema controlador com observador}
+\end{figure}
+
+Definindo o erro do estimador de estados como $E[k] = X[k] - X_{obs}[k]$ temos
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs-err-sim.png}
+    \caption{Comportamento Dinâmico do Erro do Observador}
+\end{figure}
+
+
 \subsubsection{Sistema com observador com polos mais rápidos}
 
 \section{Conclusão}
+
+
 
 % ------------------------------------------------------------------------------
 \newpage
