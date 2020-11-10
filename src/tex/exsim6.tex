@@ -134,56 +134,82 @@ $$
 
 Resolvendo o sistema temos $l_1 = \sympy{nl21} $ e $l_2 = \sympy{nl22}$
 
-\subsection{Simulação Sistema}
+\subsection{Comportamento em simulação}
 
-Para simular o sistema sem o observador foi utilizado a seguinte representação da planta
+Para simular o sistema sem o observador foi utilizado o simulink em conjunto com as representações mostradas nas figuras \ref{fig:e6-ss-model} e \ref{fig:e6-ssobs-model}, respectivamente para o sistema com e sem observador. Como forma de facilitar a identificação das partes funcionais foi adotado o seguinte esquema de cores: em verde os blocos referente a planta original, em amarelo o sinal de controle e em azul os blocos do observador.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{img/exsim6_ss_model.png}
     \caption{Diagrama de Blocos do Sistema no Simulink do Controlador sem Observador}
+    \label{fig:e6-ss-model}
 \end{figure}
-
-Para a versão com observador foi utilizado a seguinte versão
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{img/exsim6_ss_observer_model.png}
     \caption{Diagrama de Blocos do Sistema no Simulink do Controlador com Observador}
+    \label{fig:e6-ssobs-model}
 \end{figure}
 
 \subsubsection{Sistema sem observador}
 
-Como efeito para o sistema sem observador foram obtidas as seguintes respostas
+A partir da simulação, os dados foram exportados para uma variável e com isto foi obtido a seguinte resposta para sistema sem observador:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{img/exsim6-ss-sim.png}
     \caption{Resposta Sistema controlador sem observador}
+    \label{fig:e6-ss-sim}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ss-state-sim.png}
+    \caption{Resposta Sistema controlador sem observador}
+    \label{fig:e6-ss-state-sim}
 \end{figure}
 
 \subsubsection{Sistema com observador com polos iguais}
 
-Como efeito para o sistema sem observador foram obtidas as seguintes respostas
+como efeito para o sistema sem observador foram obtidas as seguintes respostas
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs-sim.png}
-    \caption{Resposta Sistema controlador com observador}
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs10-sim.png}
+    \caption{resposta sistema controlador com observador}
+    \label{fig:e6-ssobs10-state-sim}
 \end{figure}
 
-Definindo o erro do estimador de estados como $E[k] = X[k] - X_{obs}[k]$ temos
+definindo o erro do estimador de estados como $e[k] = x[k] - x_{obs}[k]$ temos
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs-err-sim.png}
-    \caption{Comportamento Dinâmico do Erro do Observador}
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs10-err-sim.png}
+    \caption{comportamento dinâmico do erro do observador}
 \end{figure}
-
 
 \subsubsection{Sistema com observador com polos mais rápidos}
 
+como efeito para o sistema sem observador foram obtidas as seguintes respostas
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs1-sim.png}
+    \caption{resposta sistema controlador com observador}
+\end{figure}
+
+definindo o erro do estimador de estados como $e[k] = x[k] - x_{obs}[k]$ temos
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exsim6-ssobs1-err-sim.png}
+    \caption{comportamento dinâmico do erro do observador}
+\end{figure}
+
 \section{Conclusão}
+
+
 
 
 

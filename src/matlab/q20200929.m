@@ -1,5 +1,5 @@
 %% QUESTION 2020-09-29
-% Gerado usando |publish('q20200929.m',struct('Format','pdf','outputDir','.')|
+% Gerado usando |publish('q20200929.m',struct('format','pdf','outputDir','.')|
 
 clear all
 close all
@@ -8,7 +8,7 @@ close all
 % Calcula Função de Transferência
 K = 1
 Ts = 0.1
-G = tf(1,[1 10 0])
+G = tf(1,[1 0.5 0])
 
 %%
 % Discretização usando ZOH
@@ -38,7 +38,8 @@ vpa(simplify(subs(sGw,T,Ts)),4) % Arrendonda para facilitar visualização
 %%
 % Calculo de Kv através do $$lim_{w \to 0}w*G(w)$$
 exprLimKv = w*simplifyFraction(subs(sGw,T,Ts))
-Kv = eval(subs(simplify(exprLimKv),w,0))
+Ess = eval(subs(simplify(exprLimKv),w,0))
+Kv = 1/Ess
 
 % Convertendo de expressão simbólica para TF
 [num,den] = numden(subs(sGw,T,Ts))
