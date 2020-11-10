@@ -3,7 +3,7 @@
 close all
 clear all
 
-syms s z T a b w
+syms s z T a b w K
 
 pretty(partfrac(1/((s+a)*(s+b)*s)))
 
@@ -33,13 +33,14 @@ sGz1 = poly2sym(num,z)/poly2sym(den,z)
 % Find G(w) from numeric TF
 zw = (2+T*w)/(2-T*w)
 sGw1 = subs(sGz1,z,zw)
+sGw1 = simplify(expand(subs(sGw1,T,Ts))) % Simplify expression
 
 % Convert symbolic to TF
-[num,den] = numden(subs(sGw1,T,Ts))
+[num,den] = numden(sGw1)
 Gw1 = zpk(tf(sym2poly(num),sym2poly(den)))
 
 % Bode Plot
-margin(Gw1)
+%margin(Gw1)
 
 % Project Requirements
 MaxError = 0.02
@@ -47,4 +48,35 @@ GainMarginDB = 10
 PhaseMarginDeg = 50
 PhaseMarginRad = degtorad(PhaseMarginDeg*1.1) % Convert and add safety margin
 
+% Input Signal ( Unitary Step )
+sR = 1/(w)                         % Symbolic
+R = tf(1,[1 0])                    % Transfer Function
 
+% Find Current Steady State Error
+Kp1 = double(subs(sGz1,z,1))
+Ess1 = 1/(1+Kp1)
+
+% Find Gain for desired Steady State Error
+exprK = MaxError - 1/(1+(Kp1*K))
+K1 = solve(exprK,K)
+nK1 = double(K1)
+
+margin(nK1*Gw1)
+
+% Controler (found by manual binary search)
+Tt = 1.5e-2;
+Gc = tf(Tt,[1 Tt])
+
+% Set Bode Plot Options
+opts = bodeoptions('cstprefs');
+opts.PhaseWrapping = 'on';
+opts.PhaseWrappingBranch = -325
+
+% Graphical Evaluation
+fig = figure()
+bode(nK1*Gw1*Gc,opts)
+hold on;
+bode(nK1*Gw1,opts)
+bode(Gc,opts)
+xline((1/Ts)/4,'--')
+hold off;
