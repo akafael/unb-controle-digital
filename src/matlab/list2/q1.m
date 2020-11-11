@@ -61,7 +61,7 @@ exprK = MaxError - 1/(1+(Kp1*K))
 K1 = solve(exprK,K)
 nK1 = double(K1)
 
-margin(nK1*Gw1)
+%margin(nK1*Gw1)
 
 % Controler (found by manual binary search)
 Tt = 1.5e-2;
@@ -73,10 +73,42 @@ opts.PhaseWrapping = 'on';
 opts.PhaseWrappingBranch = -325
 
 % Graphical Evaluation
+%fig = figure()
+%bode(nK1*Gw1*Gc,opts)
+%hold on;
+%bode(nK1*Gw1,opts)
+%bode(Gc,opts)
+%xline((1/Ts)/4,'--')
+%hold off;
+
+Gcz = c2d(Gc,Ts,'matched')
+
 fig = figure()
-bode(nK1*Gw1*Gc,opts)
-hold on;
-bode(nK1*Gw1,opts)
-bode(Gc,opts)
-xline((1/Ts)/4,'--')
-hold off;
+step(feedback(nK1*Gcz*Gz1,1))
+
+%%
+
+Ga2 = tf(Ka,[1 0],Ts) % Ga(z) = z^-1
+
+% Numeric ZOH Discretization 
+Gz2 = c2d(G1*G2,Ts,'zoh')*Ga2
+Gz2 = zpk(Gz2)
+
+% Convert TF to symbolic
+[num den] = tfdata(Gz2,'v')
+sGz2 = poly2sym(num,z)/poly2sym(den,z)
+
+% Find G(w) from numeric TF
+zw = (2+T*w)/(2-T*w)
+sGw2 = subs(sGz2,z,zw)
+sGw2 = simplify(expand(subs(sGw2,T,Ts))) % Simplify expression
+
+% Convert symbolic to TF
+[num,den] = numden(sGw2)
+Gw2 = zpk(tf(sym2poly(num),sym2poly(den)))
+
+% Bode Plot
+%margin(nK1*Gcz*Gz2)
+
+% TODO Check Controler Project Procedure ( do I use G(w) or G(z) ?)
+
