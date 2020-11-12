@@ -19,27 +19,8 @@ Gz = c2d(G,Ts,'zoh')
 
 %%
 % Convert TF to symbolic
-[num den] = tfdata(Gz,'v')
-sGz = poly2sym(num,z)/poly2sym(den,z)
-
-%%
-% Define Gain Vector
-F1 = sym('F_1')
-F2 = sym('F_2')
-F = [F1 F2]
-
-%%
-% Apply Feedback
-sys = ss(Gz)
-Ao = sys.A - sys.B*F
-Bo = sys.B
-Co = sys.C
-Do = sys.D
-
-%%
-% Characterist Poly
-I = eye(size(Ao));
-plantPoly = flip(coeffs(det(z*I-Ao),z))
+[Gnum Gden] = tfdata(Gz,'v')
+sGz = poly2sym(Gnum,z)/poly2sym(Gden,z)
 
 %%
 % Find Desired Poly
@@ -47,9 +28,21 @@ desiredPoles = [complex(0.8,0.25),complex(0.8,-0.25)]
 desiredPoly = poly(desiredPoles)
 
 %%
-% Find Feedback Gain
-polyF = (plantPoly-desiredPoly)
-[m,v] = equationsToMatrix(polyF(2:end),F);
-nF = linsolve(m,v)
+% Define Closed Loop Expected Transfer Function
+K1 = polyval(desiredPoly,1)/polyval(Gnum,1)
+l = 2
+Gm = K1*tf(Gnum,desiredPoly,Ts)*zpk([],zeros(1,l),1,Ts)
 
+%%
+% Find Controler Transfer Function
+Gc = (1/Gz)*(Gm/(1-Gm))
 
+%%
+% Find Closed Loop Transfer Function
+Gmr = feedback(Gc*Gz,1)
+Gmr = minreal(Gmr,1e-3) % Zero/Pole simplification
+
+%%
+% Controler Evaluation
+step(Gmr)
+stepinfo(Gmr)

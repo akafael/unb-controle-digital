@@ -78,7 +78,7 @@ assert( (abs(pPoles(1)-desiredPoles(1)) < 1e-10) && (abs(pPoles(2)-desiredPoles(
 
 %%
 % Graphical Evaluation
-step(Hc)
+%step(Hc)
 
 %%
 % Find Steady State error with W(z) = step
@@ -98,5 +98,36 @@ Hw = zpk(tf(sym2poly(num),sym2poly(den),Ts))
 %nBa2 = double(subs(Ba2,[A0 a b Ka],[nA0 na nb nKa]))
 %nCa = double(subs(Ca,[A0 a b Ka],[nA0 na nb nKa]))
 
+%% Parte B
+
+Gb = G
+Gb(1:2,3) = B1
+Gb(3,1:2) = -F*G - N*C*G + F
+Gb(3,3) = -F*B1 - N*C*B1 + 1
+
+%%
+% Find Characterist Equation
+I = eye(size(Gb))
+polyB = det(z*I - Gb);
+npolyB = collect(subs(polyB,[A0 a b Ka],[nA0 na nb nKa]),z);
+plantPolyB = flip(coeffs(npolyB,z))
+
+% Display using pretty for better visualization
+pretty(collect(polyB,z))
+pretty(collect(npolyB,z))
+
+%%
+% Define Desired Pole
+desiredPoleB = [complex(0.51,0.37),complex(0.51,-0.37) 0]
+desiredPolyB = poly(desiredPoleB)
+
+%%
+% Find Gain
+polyBFN = (plantPolyB-desiredPolyB)
+[m,v] = equationsToMatrix(polyBFN(2:end),[F N])
+sBF = linsolve(m,v)
+nBFN = double(subs(sBF,[A0 a b Ka],[nA0 na nb nKa]))
+nBF = [nBFN(1) nBFN(2)]
+nBN = nBFN(3)
 
 
