@@ -81,7 +81,6 @@ alpha = (1+phi)/(1-phi);
 Wlead = Wwcg;
 Tlead = 1/(alpha*Wlead);
 
-pause
 % Lead Controler
 Gwlead = tf([alpha*Tlead 1],[Tlead 1]);
 

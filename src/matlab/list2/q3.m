@@ -12,7 +12,7 @@ nKa = 2.5
 Ts = 0.2
 
 % Transfer Function
-G = [a/A0 0; -a/A0 -b/A0]
+G = [-a/A0 0; a/A0 -b/A0]
 B1 = [Ka/A0;0]
 B2 = [0;1/A0]
 C = [1 0]
@@ -75,6 +75,10 @@ sHcw = Ca*inv(z*I-Ga)*Ba2
 exprLimErrw = subs(sHcw,z,1)
 ErrW = double(subs(exprLimErrw,[A0 a b Ka F1 F2],[nA0 na nb nKa nF(1) nF(2)]))
 
+% Convert symbolic to TF
+nHcw = simplifyFraction((subs(sHcw,[A0 a b Ka F1 F2 N],[nA0 na nb nKa nF(1) nF(2) nN])),'Expand',true)
+[num,den] = numden(nHcw)
+Hw = zpk(tf(sym2poly(num),sym2poly(den),Ts))
 
 %
 %nGa = double(subs(Ga,[A0 a b Ka F1 F2],[nA0 na nb nKa nF(1) nF(2)]))
